@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ProgressWatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem 1rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        
+        .sidebar .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .logo:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .sidebar .logo i {
+            margin-right: 0.8rem;
+            font-size: 1.3rem;
+            color: #bbdefb;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .sidebar-menu a:hover::before {
+            left: 100%;
+        }
+        
+        .sidebar-menu a.active, .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid #bbdefb;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 0.8rem;
+            font-size: 1rem;
+            width: 18px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #bbdefb;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1400px;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e88e5, #43a047);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        
+        .stat-icon {
+            font-size: 1.6rem;
+            margin-bottom: 0.8rem;
+            color: #1e88e5;
+            opacity: 0.8;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 1.6rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #1e88e5;
+            line-height: 1;
+        }
+        
+        .dashboard-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e88e5, #43a047);
+        }
+        
+        .dashboard-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #1e88e5;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .dashboard-section h2::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(180deg, #1e88e5, #43a047);
+            border-radius: 2px;
+        }
+        
+        .project-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .project-table th, .project-table td {
+            padding: 0.8rem 0.7rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85rem;
+        }
+        
+        .project-table th {
+            color: #1e88e5;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f8faff 0%, #e3f2fd 100%);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .project-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .project-table tr:hover {
+            background: #f8faff;
+        }
+        
+        .project-table .action-btn {
+            background: none;
+            border: none;
+            color: #1e88e5;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-right: 0.6rem;
+            transition: all 0.3s ease;
+            padding: 0.4rem;
+            border-radius: 6px;
+        }
+        
+        .project-table .action-btn:hover {
+            color: #43a047;
+            background: rgba(67, 160, 71, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .add-btn {
+            background: linear-gradient(135deg, #43a047, #388e3c);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.6rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .add-btn:hover {
+            background: linear-gradient(135deg, #388e3c, #2e7d32);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(67, 160, 71, 0.4);
+        }
+        
+        .add-btn i {
+            font-size: 0.9rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 95%;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: #e0e0e0;
+            color: #333;
+            transform: rotate(90deg);
+        }
+        
+        .modal h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #1e88e5;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .modal label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
+        
+        .modal input, .modal select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .modal input:focus, .modal select:focus {
+            outline: none;
+            border-color: #1e88e5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        .modal .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .milestone-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .milestone-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .milestone-item.completed {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            border-color: #4caf50;
+        }
+        
+        .milestone-item.pending {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border-color: #ff9800;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 0.2rem;
+        }
+        .status-badge.active {
+            background: #e8f5e8;
+            color: #43a047;
+            border: 1px solid #43a04722;
+        }
+        .status-badge.completed {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #1976d222;
+        }
+        .status-badge.delayed {
+            background: #ffebee;
+            color: #d32f2f;
+            border: 1px solid #d32f2f22;
+        }
+        .status-badge.planning {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 1px solid #f57c0022;
+        }
+        
+        @media (max-width: 1200px) {
+            .dashboard-stats { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        }
+        
+        @media (max-width: 900px) {
+            .dashboard-stats { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+            .main-content { padding: 1.5rem 1rem; }
+            .dashboard-section { padding: 2rem; }
+        }
+        
+        @media (max-width: 700px) {
+            .sidebar { 
+                position: relative; 
+                width: 100%; 
+                height: auto; 
+                flex-direction: row; 
+                padding: 1rem; 
+                overflow-x: auto;
+            }
+            .main-content { margin-left: 0; }
+            .sidebar-menu { display: flex; gap: 1rem; }
+            .sidebar-menu li { margin-bottom: 0; }
+            .sidebar-menu a { padding: 0.8rem 1rem; font-size: 1rem; }
+        }
+
+/* Modal Styles for View Project (override/add if needed) */
+#viewProjectModal .modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+    padding: 0;
+}
+#viewProjectModal .modal-header {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+}
+#viewProjectModal .modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+#viewProjectModal .modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    z-index: 2;
+}
+#viewProjectModal .modal-close:hover {
+    background: rgba(0,0,0,0.9);
+}
+#viewProjectModal .modal-body {
+    padding: 2rem;
+}
+#viewProjectModal .modal-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    color: #1e88e5;
+    margin-bottom: 0.5rem;
+}
+#viewProjectModal .modal-creator {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+#viewProjectModal .modal-description {
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+#viewProjectModal .modal-progress {
+    margin-bottom: 2rem;
+}
+#viewProjectModal .modal-progress h4 {
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    margin-bottom: 1rem;
+}
+#viewProjectModal .modal-progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+#viewProjectModal .modal-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #43a047, #66bb6a);
+    transition: width 0.8s ease;
+}
+#viewProjectModal .modal-progress-text {
+    font-size: 1rem;
+    color: #666;
+    text-align: right;
+    font-weight: 600;
+}
+#viewProjectModal .modal-financial {
+    margin-bottom: 2rem;
+}
+#viewProjectModal .modal-financial h4 {
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    margin-bottom: 1rem;
+}
+#viewProjectModal .financial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+#viewProjectModal .financial-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+#viewProjectModal .financial-label {
+    font-weight: 600;
+    color: #333;
+}
+#viewProjectModal .financial-value {
+    font-weight: 500;
+    color: #43a047;
+    white-space: nowrap;
+}
+#viewProjectModal .modal-milestones {
+    margin-bottom: 2rem;
+}
+#viewProjectModal .modal-milestones h4 {
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    margin-bottom: 1rem;
+}
+#viewProjectModal .milestone {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #43a047;
+}
+#viewProjectModal .milestone.pending {
+    border-left-color: #f57c00;
+    background: #fff8f0;
+}
+#viewProjectModal .milestone-icon {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+    color: #43a047;
+}
+#viewProjectModal .milestone.pending .milestone-icon {
+    color: #f57c00;
+}
+#viewProjectModal .milestone-content {
+    flex: 1;
+}
+#viewProjectModal .milestone-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+#viewProjectModal .milestone-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+/* Improved Milestone Modal Styling */
+#milestonesModal .modal-content,
+#milestoneModal .modal-content {
+    background: white;
+    border-radius: 15px;
+    max-width: 700px; /* wider */
+    width: 95%;
+    padding: 2.5rem 2rem 2rem 2rem;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(30,136,229,0.10), 0 1.5px 8px rgba(67,160,71,0.08);
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 0 auto;
+}
+#milestonesModal .modal-close,
+#milestoneModal .modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(30,136,229,0.08);
+    color: #1976d2;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+#milestonesModal .modal-close:hover,
+#milestoneModal .modal-close:hover {
+    background: #1976d2;
+    color: #fff;
+}
+#milestonesModal h2, #milestoneModal h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: #1e88e5;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    text-align: left;
+}
+#milestoneModal form label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+#milestoneModal form input, #milestoneModal form select {
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 0.3rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    font-size: 1rem;
+    background: #f8f9fa;
+    transition: border 0.2s;
+}
+#milestoneModal form input:focus, #milestoneModal form select:focus {
+    border: 1.5px solid #1e88e5;
+    outline: none;
+}
+#milestoneModal .add-btn {
+    background: #1e88e5;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#milestoneModal .add-btn:hover {
+    background: #1976d2;
+}
+.edit-milestones-btn {
+  background: #1e88e5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 8px rgba(30,136,229,0.08);
+}
+.edit-milestones-btn:hover {
+  background: #1976d2;
+}
+/* Add/Edit Project Modal Styling Improvements */
+#projectModal .modal-content {
+    max-width: 700px !important;
+    width: 95%;
+    border-radius: 15px;
+    padding: 2.5rem 2rem 2rem 2rem;
+    background: white;
+    box-shadow: 0 8px 32px rgba(30,136,229,0.10), 0 1.5px 8px rgba(67,160,71,0.08);
+    margin: 0 auto;
+}
+.project-form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+.project-form-row > div {
+    flex: 1;
+}
+#formDescription {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background: #f8f9fa;
+    padding: 0.7rem;
+    font-size: 1rem;
+    width: 100%;
+    resize: vertical;
+    transition: border 0.2s;
+}
+#formDescription:focus {
+    border: 1.5px solid #1e88e5;
+    outline: none;
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <a href="#" class="logo"><i class="fas fa-chart-line"></i> ProgressWatch</a>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#" onclick="showSection('projects')"><i class="fas fa-folder-open"></i> Projects</a></li>
+                <!--<li><a href="#" onclick="openAddProjectModal();return false;"><i class="fas fa-plus-circle"></i> Add Project</a></li>-->
+                <li><a href="#" onclick="showSection('contractors')"><i class="fas fa-users"></i> Contractors</a></li>
+                <li><a href="#" onclick="showSection('stats')"><i class="fas fa-chart-pie"></i> Stats</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                &copy; 2024 ProgressWatch<br>Admin Dashboard Demo
+            </div>
+        </aside>
+        <main class="main-content">
+            <div class="dashboard-section" id="dashboardSection">
+                <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                <div class="dashboard-stats" id="dashboardStats"></div>
+            </div>
+            <div class="dashboard-section" id="projectsSection" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-folder-open"></i> Projects</h2>
+                    <button class="add-btn" onclick="openAddProjectModal()"><i class="fas fa-plus"></i> Add Project</button>
+                </div>
+                <!-- Filter Bar -->
+                <div id="projectFilterBar" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.2rem;">
+                    <input id="projectSearchInput" type="text" placeholder="Search projects..." style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem; min-width: 180px;">
+                    <select id="filterStatus" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
+                        <option value="">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Delayed">Delayed</option>
+                        <option value="Planning">Planning</option>
+                    </select>
+                    <select id="filterCategory" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
+                        <option value="">All Categories</option>
+                        <option value="infrastructure">Infrastructure</option>
+                        <option value="transport">Transport</option>
+                        <option value="education">Education</option>
+                        <option value="housing">Housing</option>
+                        <option value="climate">Climate</option>
+                        <option value="healthcare">Healthcare</option>
+                    </select>
+                    <select id="filterProvince" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
+                        <option value="">All Provinces</option>
+                        <option value="gauteng">Gauteng</option>
+                        <option value="western cape">Western Cape</option>
+                        <option value="kwazulu-natal">KwaZulu-Natal</option>
+                        <option value="eastern cape">Eastern Cape</option>
+                        <option value="limpopo">Limpopo</option>
+                        <option value="free state">Free State</option>
+                        <option value="mpumalanga">Mpumalanga</option>
+                        <option value="north west">North West</option>
+                        <option value="northern cape">Northern Cape</option>
+                    </select>
+                </div>
+                <table class="project-table" id="projectTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Category</th>
+                            <th>Province</th>
+                            <th>Budget</th>
+                            <th>Contractor</th>
+                            <th>Progress</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="dashboard-section" id="contractorsSection" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-users"></i> Contractors</h2>
+                    <button class="add-btn" onclick="openAddContractorModal()"><i class="fas fa-plus"></i> Add Contractor</button>
+                </div>
+                <table class="project-table" id="contractorsTable">
+                    <thead>
+                        <tr>
+                            <th>Contractor Name</th>
+                            <th>Number of Projects</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="dashboard-section" id="statsSection" style="display: none;">
+                <h2><i class="fas fa-chart-pie"></i> Statistics</h2>
+                <div id="statsCharts" style="min-height:200px;color:#888;">
+                    <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
+                        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
+                            <canvas id="projectsPieChart" width="350" height="300"></canvas>
+                        </div>
+                        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:500px;width:100%;margin-bottom:2rem;">
+                            <canvas id="budgetBarChart" width="450" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Add/Edit Project Modal -->
+    <div class="modal" id="projectModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content"><!-- removed inline max-width, now styled in CSS -->
+            <button class="modal-close" onclick="closeProjectModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="modalTitle">Add Project</h2>
+            <form id="projectForm">
+                <div class="project-form-row">
+                    <div>
+                        <label>Title</label>
+                        <input type="text" id="formTitle" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                    </div>
+                    <div>
+                        <label>Status</label>
+                        <select id="formStatus" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                            <option value="Planning">Planning</option>
+                            <option value="Active">Active</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Delayed">Delayed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="project-form-row">
+                    <div>
+                        <label>Category</label>
+                        <select id="formCategory" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                            <option value="infrastructure">Infrastructure</option>
+                            <option value="transport">Transport</option>
+                            <option value="education">Education</option>
+                            <option value="housing">Housing</option>
+                            <option value="climate">Climate</option>
+                            <option value="healthcare">Healthcare</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Province</label>
+                        <select id="formProvince" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                            <option value="gauteng">Gauteng</option>
+                            <option value="western cape">Western Cape</option>
+                            <option value="kwazulu-natal">KwaZulu-Natal</option>
+                            <option value="eastern cape">Eastern Cape</option>
+                            <option value="limpopo">Limpopo</option>
+                            <option value="free state">Free State</option>
+                            <option value="mpumalanga">Mpumalanga</option>
+                            <option value="north west">North West</option>
+                            <option value="northern cape">Northern Cape</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="project-form-row">
+                    <div>
+                        <label>Budget (R)</label>
+                        <input type="number" id="formBudget" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                    </div>
+                    <div>
+                        <label>Contractor</label>
+                        <select id="formContractor" required style="width:100%;padding:0.7rem;margin-top:0.3rem;"></select>
+                    </div>
+                </div>
+                <div class="project-form-row">
+                    <div>
+                        <label>Progress (%)</label>
+                        <input type="number" id="formProgress" min="0" max="100" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                    </div>
+                </div>
+                <div style="margin-bottom:1.5rem;">
+                    <label>Description</label>
+                    <textarea id="formDescription" rows="3"></textarea>
+                </div>
+                <div style="text-align:right;">
+                    <button type="submit" class="add-btn" style="margin:0;">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Milestones Modal -->
+    <div class="modal" id="milestonesModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:12px;max-width:800px;width:95%;padding:2rem;position:relative;max-height:90vh;overflow-y:auto;">
+            <button class="modal-close" onclick="closeMilestonesModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="milestonesModalTitle"><i class="fas fa-flag-checkered"></i> Project Milestones</h2>
+            <div id="milestonesModalContent"></div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Milestone Modal -->
+    <div class="modal" id="milestoneModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content"><!-- removed inline max-width -->
+            <button class="modal-close" onclick="closeMilestoneModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="milestoneModalTitle">Add/Edit Milestone</h2>
+            <form id="milestoneForm">
+                <div style="margin-bottom:1rem;">
+                    <label>Title</label>
+                    <input type="text" id="milestoneTitle" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label>Date</label>
+                    <input type="text" id="milestoneDate" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label>Status</label>
+                    <select id="milestoneStatus" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:1.5rem;">
+                    <label>Add Files (Pictures, PDF, etc)</label>
+                    <input type="file" id="milestoneFiles" multiple accept="image/*,application/pdf">
+                    <div id="milestoneFilePreview" class="file-preview-list"></div>
+                </div>
+                <div style="text-align:right;">
+                    <button type="submit" class="add-btn" style="margin:0;">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Project Delete Confirmation Modal -->
+    <div class="modal" id="deleteProjectModal" style="display:none;position:fixed;z-index:2100;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:400px;width:95%;padding:2rem;position:relative;text-align:center;">
+            <button class="modal-close" onclick="closeDeleteProjectModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <div style="font-size:2.5rem;color:#d32f2f;margin-bottom:1rem;"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 style="color:#d32f2f;margin-bottom:1rem;">Delete Project?</h3>
+            <div id="deleteProjectName" style="font-weight:600;margin-bottom:1.5rem;"></div>
+            <div style="margin-top:1.5rem;display:flex;gap:1rem;justify-content:center;">
+                <button class="add-btn" style="background:#d32f2f;" onclick="confirmDeleteProject()">Delete</button>
+                <button class="add-btn" style="background:#bdbdbd;color:#333;" onclick="closeDeleteProjectModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <!-- Add/Edit Contractor Modal -->
+    <div class="modal" id="contractorModal" style="display:none;position:fixed;z-index:2100;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:400px;width:95%;padding:2rem;position:relative;text-align:left;">
+            <button class="modal-close" onclick="closeContractorModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="contractorModalTitle" style="text-align:left;">Add Contractor</h2>
+            <form id="contractorForm">
+                <div style="margin-bottom:1rem;text-align:left;">
+                    <label for="formContractorName" style="display:block;text-align:left;">Contractor Name</label>
+                    <input type="text" id="formContractorName" required style="width:100%;padding:0.7rem;margin-top:0.3rem;text-align:left;">
+                </div>
+                <div style="margin-bottom:1rem;text-align:left;">
+                    <label for="formContractorEmail" style="display:block;text-align:left;">Email</label>
+                    <input type="email" id="formContractorEmail" style="width:100%;padding:0.7rem;margin-top:0.3rem;text-align:left;">
+                </div>
+                <div style="margin-bottom:1rem;text-align:left;">
+                    <label for="formContractorPhone" style="display:block;text-align:left;">Phone</label>
+                    <input type="text" id="formContractorPhone" style="width:100%;padding:0.7rem;margin-top:0.3rem;text-align:left;">
+                </div>
+                <div style="margin-bottom:1rem;text-align:left;">
+                    <label for="formContractorAddress" style="display:block;text-align:left;">Address</label>
+                    <input type="text" id="formContractorAddress" style="width:100%;padding:0.7rem;margin-top:0.3rem;text-align:left;">
+                </div>
+                <div style="margin-bottom:1.5rem;text-align:left;">
+                    <label for="formContractorReg" style="display:block;text-align:left;">Company Registration Number</label>
+                    <input type="text" id="formContractorReg" style="width:100%;padding:0.7rem;margin-top:0.3rem;text-align:left;">
+                </div>
+                <div style="text-align:right;">
+                    <button type="submit" class="add-btn" style="margin:0;">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Delete Contractor Modal -->
+    <div class="modal" id="deleteContractorModal" style="display:none;position:fixed;z-index:2100;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:400px;width:95%;padding:2rem;position:relative;text-align:center;">
+            <button class="modal-close" onclick="closeDeleteContractorModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <div style="font-size:2.5rem;color:#d32f2f;margin-bottom:1rem;"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 style="color:#d32f2f;margin-bottom:1rem;">Delete Contractor?</h3>
+            <div id="deleteContractorName" style="font-weight:600;margin-bottom:1.5rem;"></div>
+            <div style="margin-top:1.5rem;display:flex;gap:1rem;justify-content:center;">
+                <button class="add-btn" style="background:#d32f2f;" onclick="confirmDeleteContractor()">Delete</button>
+                <button class="add-btn" style="background:#bdbdbd;color:#333;" onclick="closeDeleteContractorModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <!-- View Contractor Modal -->
+    <div class="modal" id="viewContractorModal" style="display:none;position:fixed;z-index:2100;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:400px;width:95%;padding:2rem;position:relative;">
+            <button class="modal-close" onclick="closeViewContractorModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="viewContractorTitle">Contractor Details</h2>
+            <div id="viewContractorDetails"></div>
+        </div>
+    </div>
+    <!-- View Project Modal -->
+    <div class="modal" id="viewProjectModal" style="display:none;position:fixed;z-index:2100;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content">
+            <div id="viewProjectContent"></div>
+        </div>
+    </div>
+    <!-- Add a custom Delete Milestone Modal to the HTML -->
+    <div class="modal" id="deleteMilestoneModal" style="display:none;position:fixed;z-index:2400;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:400px;width:95%;padding:2rem;position:relative;text-align:center;">
+            <button class="modal-close" onclick="closeDeleteMilestoneModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <div style="font-size:2.5rem;color:#d32f2f;margin-bottom:1rem;"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 style="color:#d32f2f;margin-bottom:1rem;">Delete Milestone?</h3>
+            <div id="deleteMilestoneName" style="font-weight:600;margin-bottom:1.5rem;"></div>
+            <div style="margin-top:1.5rem;display:flex;gap:1rem;justify-content:center;">
+                <button class="add-btn" style="background:#d32f2f;" onclick="confirmDeleteMilestone()">Delete</button>
+                <button class="add-btn" style="background:#bdbdbd;color:#333;" onclick="closeDeleteMilestoneModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+// --- Demo Data ---
+let projects = [
+  {
+    id: 1,
+    title: "City Park Renovation",
+    status: "Active",
+    category: "infrastructure",
+    province: "gauteng",
+    budget: 2500000,
+    contractor: "GreenLand Construction Ltd",
+    progress: 75,
+    milestones: [
+      { title: "Design and Planning", date: "Completed - March 2024", status: "completed" },
+      { title: "Permit Acquisition", date: "Completed - April 2024", status: "completed" },
+      { title: "Ground Preparation", date: "Completed - May 2024", status: "completed" },
+      { title: "Playground Installation", date: "In Progress - June 2024", status: "pending" },
+      { title: "Landscaping and Pathways", date: "Scheduled - August 2024", status: "pending" },
+      { title: "Final Inspection", date: "Scheduled - September 2024", status: "pending" }
+    ]
+  },
+  {
+    id: 2,
+    title: "Public Transport Expansion",
+    status: "Delayed",
+    category: "transport",
+    province: "western cape",
+    budget: 15000000,
+    contractor: "UrbanMove Ltd",
+    progress: 45,
+    milestones: [
+      { title: "Feasibility Study", date: "Completed - Jan 2024", status: "completed" },
+      { title: "Route Planning", date: "Completed - Feb 2024", status: "completed" },
+      { title: "Community Engagement", date: "Completed - Mar 2024", status: "completed" },
+      { title: "Route Implementation", date: "Scheduled - May 2024", status: "pending" },
+      { title: "Final Inspection", date: "Scheduled - June 2024", status: "pending" }
+    ]
+  },
+  {
+    id: 3,
+    title: "Digital Education Initiative",
+    status: "Completed",
+    category: "education",
+    province: "kwazulu-natal",
+    budget: 8500000,
+    contractor: "TechEdu Systems",
+    progress: 100,
+    milestones: [
+      { title: "Tablet Distribution", date: "Completed - Jan 2024", status: "completed" },
+      { title: "Internet Infrastructure", date: "Completed - Feb 2024", status: "completed" },
+      { title: "Training Sessions", date: "Completed - Mar 2024", status: "completed" },
+      { title: "Monitoring and Evaluation", date: "In Progress - Apr 2024", status: "pending" },
+      { title: "Sustainability Plan", date: "Scheduled - May 2024", status: "pending" },
+      { title: "Final Report", date: "Scheduled - June 2024", status: "pending" }
+    ]
+  },
+  {
+    id: 4,
+    title: "Affordable Housing Project",
+    status: "Active",
+    category: "housing",
+    province: "eastern cape",
+    budget: 45000000,
+    contractor: "Community Builders Inc",
+    progress: 25,
+    milestones: [
+      { title: "Site Acquisition", date: "Completed - Jan 2024", status: "completed" },
+      { title: "Permit Acquisition", date: "Completed - Feb 2024", status: "completed" },
+      { title: "Foundation Work", date: "In Progress - Mar 2024", status: "pending" },
+      { title: "Construction", date: "Scheduled - Apr 2024", status: "pending" },
+      { title: "Final Inspection", date: "Scheduled - May 2024", status: "pending" },
+      { title: "Completion", date: "Scheduled - June 2024", status: "pending" }
+    ]
+  }
+];
+let nextProjectId = 5;
+let editingProjectId = null;
+let editingMilestone = null;
+let projectIdToDelete = null;
+let contractorNameToDelete = null;
+
+// --- Stats ---
+function renderStats() {
+  const total = projects.length;
+  const active = projects.filter(p => p.status === "Active").length;
+  const completed = projects.filter(p => p.status === "Completed").length;
+  const delayed = projects.filter(p => p.status === "Delayed").length;
+  const planning = projects.filter(p => p.status === "Planning").length;
+  const totalBudget = projects.reduce((sum, p) => sum + (p.budget || 0), 0);
+  document.getElementById('dashboardStats').innerHTML = `
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-folder-open"></i></div><div class="stat-label">Total Projects</div><div class="stat-value">${total}</div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-label">Active</div><div class="stat-value">${active}</div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-label">Completed</div><div class="stat-value">${completed}</div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-label">Delayed</div><div class="stat-value">${delayed}</div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-lightbulb"></i></div><div class="stat-label">Planning</div><div class="stat-value">${planning}</div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-label">Total Budget</div><div class="stat-value">R ${totalBudget.toLocaleString()}</div></div>
+  `;
+}
+
+// --- Project Table ---
+function renderProjects() {
+  const tbody = document.querySelector('#projectTable tbody');
+  tbody.innerHTML = '';
+  const searchTerm = document.getElementById('projectSearchInput').value.toLowerCase();
+  const filterStatus = document.getElementById('filterStatus').value;
+  const filterCategory = document.getElementById('filterCategory').value;
+  const filterProvince = document.getElementById('filterProvince').value;
+
+  projects.forEach(project => {
+    const matchesSearch = project.title.toLowerCase().includes(searchTerm) ||
+                          project.contractor.toLowerCase().includes(searchTerm) ||
+                          project.province.toLowerCase().includes(searchTerm);
+    const matchesStatus = filterStatus === "" || project.status === filterStatus;
+    const matchesCategory = filterCategory === "" || project.category === filterCategory;
+    const matchesProvince = filterProvince === "" || project.province === filterProvince;
+
+    if (matchesSearch && matchesStatus && matchesCategory && matchesProvince) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${project.title}</td>
+        <td><span class="status-badge ${project.status.toLowerCase().replace(/\s/g, '-')}">${project.status}</span></td>
+        <td>${capitalize(project.category)}</td>
+        <td>${capitalize(project.province)}</td>
+        <td>R ${project.budget.toLocaleString()}</td>
+        <td>${project.contractor}</td>
+        <td>${project.progress}%</td>
+        <td>
+          <button class="action-btn" title="View" onclick="viewProject(${project.id})"><i class="fas fa-eye"></i></button>
+          <button class="action-btn" title="Edit" onclick="editProject(${project.id})"><i class="fas fa-edit"></i></button>
+          <button class="action-btn" title="Delete" onclick="deleteProject(${project.id})"><i class="fas fa-trash"></i></button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+}
+
+// --- Add/Edit Project Modal ---
+function openAddProjectModal() {
+  editingProjectId = null;
+  document.getElementById('modalTitle').textContent = 'Add Project';
+  document.getElementById('formTitle').value = '';
+  document.getElementById('formStatus').value = 'Planning';
+  document.getElementById('formCategory').value = 'infrastructure';
+  document.getElementById('formProvince').value = 'gauteng';
+  document.getElementById('formBudget').value = '';
+  refreshContractorDropdown();
+  document.getElementById('formProgress').value = '';
+  document.getElementById('formDescription').value = '';
+  document.getElementById('projectModal').style.display = 'flex';
+}
+function closeProjectModal() {
+  document.getElementById('projectModal').style.display = 'none';
+}
+document.getElementById('projectForm').onsubmit = function(e) {
+  e.preventDefault();
+  const title = document.getElementById('formTitle').value;
+  const status = document.getElementById('formStatus').value;
+  const category = document.getElementById('formCategory').value;
+  const province = document.getElementById('formProvince').value;
+  const budget = parseFloat(document.getElementById('formBudget').value);
+  const contractor = document.getElementById('formContractor').value;
+  const progress = parseInt(document.getElementById('formProgress').value);
+  const description = document.getElementById('formDescription').value;
+  if (editingProjectId) {
+    const p = projects.find(p => p.id === editingProjectId);
+    p.title = title; p.status = status; p.category = category; p.province = province; p.budget = budget; p.contractor = contractor; p.progress = progress; p.description = description;
+  } else {
+    projects.push({ id: nextProjectId++, title, status, category, province, budget, contractor, progress, description, milestones: [] });
+  }
+  closeProjectModal();
+  renderStats();
+  renderProjects();
+};
+function editProject(id) {
+  const p = projects.find(p => p.id === id);
+  editingProjectId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Project';
+  document.getElementById('formTitle').value = p.title;
+  document.getElementById('formStatus').value = p.status;
+  document.getElementById('formCategory').value = p.category;
+  document.getElementById('formProvince').value = p.province;
+  document.getElementById('formBudget').value = p.budget;
+  refreshContractorDropdown(p.contractor);
+  document.getElementById('formProgress').value = p.progress;
+  document.getElementById('formDescription').value = p.description || '';
+  document.getElementById('projectModal').style.display = 'flex';
+}
+function deleteProject(id) {
+  const project = projects.find(p => p.id === id);
+  projectIdToDelete = id;
+  document.getElementById('deleteProjectName').textContent = project.title;
+  document.getElementById('deleteProjectModal').style.display = 'flex';
+}
+function closeDeleteProjectModal() {
+  document.getElementById('deleteProjectModal').style.display = 'none';
+  projectIdToDelete = null;
+}
+function confirmDeleteProject() {
+  if (projectIdToDelete) {
+    projects = projects.filter(p => p.id !== projectIdToDelete);
+    closeDeleteProjectModal();
+    renderStats();
+    renderProjects();
+  }
+}
+// --- Milestone Management ---
+// Add a variable to track expanded milestone
+let expandedMilestoneIndex = null;
+// Update openMilestonesModal to render expandable milestones
+function openMilestonesModal(projectId) {
+  document.getElementById('milestonesModal').style.display = 'flex';
+  document.getElementById('milestonesModal').style.zIndex = 2200;
+  const viewModal = document.getElementById('viewProjectModal');
+  if (viewModal && viewModal.style.display === 'flex') {
+    viewModal.style.zIndex = 2100;
+    viewModal.style.pointerEvents = 'none';
+    viewModal.style.opacity = 0.7;
+  }
+  const project = projects.find(p => p.id === projectId);
+  document.getElementById('milestonesModalTitle').innerHTML = `<i class="fas fa-flag-checkered"></i> ${project.title} - Milestones`;
+  let html = `<div style="margin-bottom:1.5rem;"><button class='add-btn' onclick='openMilestoneModal(${projectId})'><i class='fas fa-plus'></i> Add Milestone</button></div>`;
+  if (!project.milestones.length) {
+    html += '<div style="color:#888;text-align:center;padding:2rem;background:#f8f9fa;border-radius:8px;">No milestones yet. Click "Add Milestone" to create one.</div>';
+  } else {
+    html += '<div style="background:#f8f9fa;border-radius:8px;padding:1rem;">';
+    project.milestones.forEach((m, i) => {
+      html += `<div class='milestone${m.status==="completed"?"":" pending"}' style='margin-bottom:1rem;background:white;padding:1rem;border-radius:8px;position:relative;display:flex;align-items:center;'>`;
+      html += `<div style='display:flex;align-items:center;flex:1;'>`;
+      html += `<div class='milestone-icon'>${m.status==="completed" ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-clock"></i>'}</div>`;
+      html += `<div class='milestone-content'><div class='milestone-title'>${m.title}</div><div class='milestone-date' style='font-size:0.95em;color:#666;'><strong>Date:</strong> ${m.date}</div><div style='font-size:0.95em;'><strong>Status:</strong> <span style='color:${m.status==="completed"?"#43a047":"#f57c00"};font-weight:600;'>${capitalize(m.status)}</span></div></div>`;
+      if (m.files && m.files.length) {
+        html += `<div style='margin-top:0.7rem;padding-left:2.2rem;'><div style='margin-bottom:0.5rem;'><strong>Files:</strong><div style='display:flex;gap:0.5rem;margin-top:0.5rem;'>`;
+        Array.from(m.files).forEach(file => {
+          if (file.type && file.type.startsWith('image/')) {
+            html += `<img src='${URL.createObjectURL(file)}' style='width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;' onload='URL.revokeObjectURL(this.src)'>`;
+          } else if (file.type === 'application/pdf') {
+            html += `<span style='font-size:2rem;color:#d32f2f;'><i class=\"fas fa-file-pdf\"></i></span>`;
+          } else {
+            html += `<span>${file.name}</span>`;
+          }
+        });
+        html += `</div></div></div>`;
+      }
+      html += `</div>`; // end left info
+      html += `<div style='display:flex;align-items:center;gap:0.5rem;margin-left:auto;'><button class='action-btn' title='Edit' onclick='editMilestone(${projectId},${i})'><i class='fas fa-edit'></i></button><button class='action-btn' title='Delete' onclick='deleteMilestone(${projectId},${i})'><i class='fas fa-trash'></i></button></div>`;
+      html += `</div>`;
+    });
+    html += '</div>';
+  }
+  document.getElementById('milestonesModalContent').innerHTML = html;
+}
+function toggleMilestoneExpand(idx, projectId) {
+  expandedMilestoneIndex = expandedMilestoneIndex === idx ? null : idx;
+  openMilestonesModal(projectId);
+}
+function closeMilestonesModal() {
+  document.getElementById('milestonesModal').style.display = 'none';
+  // Restore viewProjectModal if it was open
+  const viewModal = document.getElementById('viewProjectModal');
+  if (viewModal) {
+    viewModal.style.zIndex = 2100;
+    viewModal.style.pointerEvents = '';
+    viewModal.style.opacity = 1;
+  }
+}
+function openMilestoneModal(projectId) {
+  editingMilestone = { projectId, index: null };
+  document.getElementById('milestoneModalTitle').textContent = 'Add Milestone';
+  document.getElementById('milestoneTitle').value = '';
+  document.getElementById('milestoneDate').value = '';
+  document.getElementById('milestoneStatus').value = 'pending';
+  document.getElementById('milestoneModal').style.display = 'flex';
+  // Bring Add/Edit Milestone modal in front of Edit Milestones modal
+  document.getElementById('milestoneModal').style.zIndex = 2300;
+  document.getElementById('milestonesModal').style.zIndex = 2200;
+  document.getElementById('milestonesModal').style.opacity = 0.7;
+  document.getElementById('milestonesModal').style.pointerEvents = 'none';
+}
+function editMilestone(projectId, index) {
+  editingMilestone = { projectId, index };
+  const m = projects.find(p => p.id === projectId).milestones[index];
+  document.getElementById('milestoneModalTitle').textContent = 'Edit Milestone';
+  document.getElementById('milestoneTitle').value = m.title;
+  document.getElementById('milestoneDate').value = m.date;
+  document.getElementById('milestoneStatus').value = m.status;
+  document.getElementById('milestoneModal').style.display = 'flex';
+  // Bring Add/Edit Milestone modal in front of Edit Milestones modal
+  document.getElementById('milestoneModal').style.zIndex = 2300;
+  document.getElementById('milestonesModal').style.zIndex = 2200;
+  document.getElementById('milestonesModal').style.opacity = 0.7;
+  document.getElementById('milestonesModal').style.pointerEvents = 'none';
+}
+function closeMilestoneModal() {
+  document.getElementById('milestoneModal').style.display = 'none';
+  // Restore Edit Milestones modal
+  document.getElementById('milestonesModal').style.opacity = 1;
+  document.getElementById('milestonesModal').style.pointerEvents = '';
+}
+document.getElementById('milestoneForm').onsubmit = function(e) {
+  e.preventDefault();
+  const title = document.getElementById('milestoneTitle').value;
+  const date = document.getElementById('milestoneDate').value;
+  const status = document.getElementById('milestoneStatus').value;
+  const files = document.getElementById('milestoneFiles').files; // Get files
+  const { projectId, index } = editingMilestone;
+  const project = projects.find(p => p.id === projectId);
+  if (index !== null) {
+    project.milestones[index] = { title, date, status, files }; // Update milestone with files
+  } else {
+    project.milestones.push({ title, date, status, files }); // Add new milestone with files
+  }
+  closeMilestoneModal();
+  openMilestonesModal(projectId);
+};
+function deleteMilestone(projectId, index) {
+  milestoneToDelete = { projectId, index };
+  const project = projects.find(p => p.id === projectId);
+  const milestone = project.milestones[index];
+  document.getElementById('deleteMilestoneName').textContent = milestone.title;
+  document.getElementById('deleteMilestoneModal').style.display = 'flex';
+}
+function closeDeleteMilestoneModal() {
+  document.getElementById('deleteMilestoneModal').style.display = 'none';
+  milestoneToDelete = null;
+}
+function confirmDeleteMilestone() {
+  if (milestoneToDelete) {
+    const { projectId, index } = milestoneToDelete;
+    const project = projects.find(p => p.id === projectId);
+    project.milestones.splice(index, 1);
+    closeDeleteMilestoneModal();
+    openMilestonesModal(projectId);
+  }
+}
+// --- Contractors ---
+function renderContractors() {
+  const contractors = {};
+  projects.forEach(project => {
+    if (contractors[project.contractor]) {
+      contractors[project.contractor]++;
+    } else {
+      contractors[project.contractor] = 1;
+    }
+  });
+
+  const tbody = document.querySelector('#contractorsTable tbody');
+  tbody.innerHTML = '';
+  Object.entries(contractors).forEach(([contractorName, count]) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${contractorName}</td>
+      <td>${count}</td>
+      <td>
+        <button class="action-btn" title="View" onclick="viewContractor('${contractorName}')"><i class="fas fa-eye"></i></button>
+        <button class="action-btn" title="Edit" onclick="editContractor('${contractorName}')"><i class="fas fa-edit"></i></button>
+        <button class="action-btn" title="Delete" onclick="deleteContractor('${contractorName}')"><i class="fas fa-trash"></i></button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// --- Add/Edit Contractor Modal ---
+function openAddContractorModal() {
+  document.getElementById('contractorModalTitle').textContent = 'Add Contractor';
+  document.getElementById('formContractorName').value = '';
+  document.getElementById('formContractorEmail').value = '';
+  document.getElementById('formContractorPhone').value = '';
+  document.getElementById('formContractorAddress').value = '';
+  document.getElementById('formContractorReg').value = '';
+  document.getElementById('contractorModal').style.display = 'flex';
+}
+function closeContractorModal() {
+  document.getElementById('contractorModal').style.display = 'none';
+}
+document.getElementById('contractorForm').onsubmit = function(e) {
+  e.preventDefault();
+  const contractorName = document.getElementById('formContractorName').value;
+  const email = document.getElementById('formContractorEmail').value;
+  const phone = document.getElementById('formContractorPhone').value;
+  const address = document.getElementById('formContractorAddress').value;
+  const regNumber = document.getElementById('formContractorReg').value;
+
+  if (contractorName) {
+    // In a real app, you'd add this contractor to a list of contractors
+    // For this demo, we'll just add it to the projects if it's a new contractor
+    // or update existing projects if it's an existing one.
+    projects.forEach(project => {
+      if (project.contractor === contractorName) {
+        project.contractor = contractorName; // Update existing project
+        project.email = email;
+        project.phone = phone;
+        project.address = address;
+        project.regNumber = regNumber;
+      }
+    });
+    closeContractorModal();
+    renderContractors();
+  }
+};
+function editContractor(name) {
+  document.getElementById('contractorModalTitle').textContent = 'Edit Contractor';
+  const contractor = projects.find(p => p.contractor === name);
+  document.getElementById('formContractorName').value = contractor.contractor;
+  document.getElementById('formContractorEmail').value = contractor.email || '';
+  document.getElementById('formContractorPhone').value = contractor.phone || '';
+  document.getElementById('formContractorAddress').value = contractor.address || '';
+  document.getElementById('formContractorReg').value = contractor.regNumber || '';
+  document.getElementById('contractorModal').style.display = 'flex';
+}
+function deleteContractor(name) {
+  contractorNameToDelete = name;
+  document.getElementById('deleteContractorName').textContent = name;
+  document.getElementById('deleteContractorModal').style.display = 'flex';
+}
+function closeDeleteContractorModal() {
+  document.getElementById('deleteContractorModal').style.display = 'none';
+  contractorNameToDelete = null;
+}
+function confirmDeleteContractor() {
+  if (contractorNameToDelete) {
+    projects = projects.filter(p => p.contractor !== contractorNameToDelete);
+    closeDeleteContractorModal();
+    renderContractors();
+    renderProjects();
+  }
+}
+
+// --- View Contractor Modal ---
+function viewContractor(name) {
+  const contractor = projects.find(p => p.contractor === name);
+  let detailsHtml = `<p><strong>Name:</strong> ${contractor.contractor}</p>`;
+  detailsHtml += `<p><strong>Email:</strong> ${contractor.email || 'N/A'}</p>`;
+  detailsHtml += `<p><strong>Phone:</strong> ${contractor.phone || 'N/A'}</p>`;
+  detailsHtml += `<p><strong>Address:</strong> ${contractor.address || 'N/A'}</p>`;
+  detailsHtml += `<p><strong>Registration Number:</strong> ${contractor.regNumber || 'N/A'}</p>`;
+  detailsHtml += `<p><strong>Number of Projects:</strong> ${projects.filter(p => p.contractor === name).length}</p>`;
+
+  document.getElementById('viewContractorTitle').textContent = `Contractor Details: ${contractor.contractor}`;
+  document.getElementById('viewContractorDetails').innerHTML = detailsHtml;
+  document.getElementById('viewContractorModal').style.display = 'flex';
+}
+function closeViewContractorModal() {
+  document.getElementById('viewContractorModal').style.display = 'none';
+}
+
+// --- View Project Modal ---
+// Track expanded milestone in View Project modal
+let expandedViewMilestoneIndex = null;
+// Update viewProject to render expandable milestones
+function viewProject(id) {
+  const project = projects.find(p => p.id === id);
+  let html = `<div class='modal-header'>`;
+  html += `<img src='${project.image || "https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800"}' alt='Project Image' class='modal-image'>`;
+  html += `<button class='modal-close' onclick='closeViewProjectModal()'><i class='fas fa-times'></i></button>`;
+  html += `</div>`;
+  html += `<div class='modal-body'>`;
+  html += `<button class='modal-btn modal-btn-secondary' style='float:right;margin-left:1rem;margin-bottom:1rem;' onclick='editProject(${project.id});closeViewProjectModal();'><i class='fas fa-edit'></i> Edit</button>`;
+  html += `<h2 class='modal-title'>${project.title}</h2>`;
+  html += `<p class='modal-creator'>by ${project.creator || project.contractor || "Unknown"}</p>`;
+  html += `<p class='modal-description'>${project.description || "No description available."}</p>`;
+  html += `<div class='modal-progress'><h4>Progress Overview</h4><div class='modal-progress-bar'><div class='modal-progress-fill' style='width:${project.progress || 0}%'></div></div><p class='modal-progress-text'>${project.progress || 0}% Complete</p></div>`;
+  html += `<div class='modal-financial'><h4>Financial Information</h4><div class='financial-grid'>`;
+  html += `<div class='financial-item'><span class='financial-label'>Project Budget:</span><span class='financial-value'>R ${project.budget ? project.budget.toLocaleString() : "-"}</span></div>`;
+  html += `<div class='financial-item'><span class='financial-label'>Amount Spent:</span><span class='financial-value'>${project.spent ? project.spent : "-"}</span></div>`;
+  html += `<div class='financial-item'><span class='financial-label'>Contractor:</span><span class='financial-value'>${project.contractor || "-"}</span></div>`;
+  html += `</div></div>`;
+  html += `<div class='modal-milestones'><h4>Project Milestones</h4><div>`;
+  if (project.milestones && project.milestones.length) {
+    project.milestones.forEach((milestone, i) => {
+      const isExpanded = expandedViewMilestoneIndex === i;
+      const hasExtra = milestone.files && milestone.files.length;
+      html += `<div class='milestone${milestone.status === "completed" ? "" : " pending"}' style='margin-bottom:1rem;background:white;padding:1rem;border-radius:8px;position:relative;display:flex;align-items:center;cursor:${hasExtra ? 'pointer' : 'default'};' ${hasExtra ? `onclick='toggleViewMilestoneExpand(${i},${project.id})'` : ''}>`;
+      html += `<div style='display:flex;align-items:center;flex:1 1 0;'>`;
+      html += `<div class='milestone-icon'>${milestone.status === "completed" ? '<i class=\"fas fa-check-circle\"></i>' : '<i class=\"fas fa-clock\"></i>'}</div>`;
+      html += `<div class='milestone-content'><div class='milestone-title'>${milestone.title}</div><div class='milestone-date' style='font-size:0.95em;color:#666;'><strong>Date:</strong> ${milestone.date}</div><div style='font-size:0.95em;'><strong>Status:</strong> <span style='color:${milestone.status === "completed" ? "#43a047" : "#f57c00"};font-weight:600;'>${capitalize(milestone.status)}</span></div></div>`;
+      html += `</div>`;
+      if (hasExtra) {
+        html += `<div style='margin-left:auto;font-size:1.2rem;'><i class='fas fa-chevron-${isExpanded ? "up" : "down"}'></i></div>`;
+      }
+      if (isExpanded && hasExtra) {
+        html += `<div style='width:100%;margin-top:1rem;padding-left:2.2rem;'>`;
+        html += `<div style='margin-bottom:0.5rem;'><strong>Files:</strong><div style='display:flex;gap:0.5rem;margin-top:0.5rem;'>`;
+        Array.from(milestone.files).forEach(file => {
+          if (file.type && file.type.startsWith('image/')) {
+            html += `<img src='${URL.createObjectURL(file)}' style='width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;' onload='URL.revokeObjectURL(this.src)'>`;
+          } else if (file.type === 'application/pdf') {
+            html += `<span style='font-size:2rem;color:#d32f2f;'><i class=\"fas fa-file-pdf\"></i></span>`;
+          } else {
+            html += `<span>${file.name}</span>`;
+          }
+        });
+        html += `</div></div>`;
+        html += `</div>`;
+      }
+      html += `</div>`;
+    });
+  } else {
+    html += `<div style='color:#888;'>No milestones yet.</div>`;
+  }
+  html += `</div></div>`;
+  html += `<div style='text-align:right;margin-top:2rem;'><button class='modal-btn modal-btn-primary edit-milestones-btn' onclick='openMilestonesModal(${project.id})'>${project.milestones && project.milestones.length ? 'Edit Milestones' : 'Add Milestones'}</button></div>`;
+  html += `</div>`;
+  document.getElementById('viewProjectContent').innerHTML = html;
+  document.getElementById('viewProjectModal').style.display = 'flex';
+}
+function toggleViewMilestoneExpand(idx, projectId) {
+  expandedViewMilestoneIndex = expandedViewMilestoneIndex === idx ? null : idx;
+  viewProject(projectId);
+}
+function closeViewProjectModal() {
+  document.getElementById('viewProjectModal').style.display = 'none';
+}
+
+// --- Helpers ---
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).replace(/-/g, ' ');
+}
+// --- Section Navigation ---
+function showSection(sectionName) {
+    // Hide all sections
+    document.getElementById('dashboardSection').style.display = 'none';
+    document.getElementById('projectsSection').style.display = 'none';
+    document.getElementById('contractorsSection').style.display = 'none';
+    document.getElementById('statsSection').style.display = 'none';
+    
+    // Show selected section
+    document.getElementById(sectionName + 'Section').style.display = 'block';
+    
+    // Update active menu item
+    document.querySelectorAll('.sidebar-menu a').forEach(link => {
+        link.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Render content for the selected section
+    switch(sectionName) {
+        case 'dashboard':
+            renderStats();
+            break;
+        case 'projects':
+            renderProjects();
+            break;
+        case 'contractors':
+            renderContractors();
+            break;
+        case 'stats':
+            renderStatsCharts();
+            break;
+    }
+}
+
+// --- Initial Render ---
+showSection('dashboard');
+
+document.addEventListener('DOMContentLoaded', function() {
+  ['projectSearchInput', 'filterStatus', 'filterCategory', 'filterProvince'].forEach(id => {
+    document.getElementById(id).addEventListener('input', renderProjects);
+    document.getElementById(id).addEventListener('change', renderProjects);
+  });
+});
+
+// Milestone file preview logic
+let milestoneFilesArray = [];
+const milestoneFilesInput = document.getElementById('milestoneFiles');
+const milestoneFilePreview = document.getElementById('milestoneFilePreview');
+if (milestoneFilesInput) {
+  milestoneFilesInput.addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    milestoneFilesArray = milestoneFilesArray.concat(files);
+    renderMilestoneFilePreview();
+    e.target.value = '';
+  });
+}
+function renderMilestoneFilePreview() {
+  if (!milestoneFilePreview) return;
+  milestoneFilePreview.innerHTML = '';
+  milestoneFilesArray.forEach((file, idx) => {
+    const item = document.createElement('div');
+    item.className = 'file-preview-item';
+    if (file.type.startsWith('image/')) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.onload = () => URL.revokeObjectURL(img.src);
+      item.appendChild(img);
+    } else if (file.type === 'application/pdf') {
+      const icon = document.createElement('div');
+      icon.className = 'pdf-icon';
+      icon.innerHTML = '<i class="fas fa-file-pdf"></i>';
+      item.appendChild(icon);
+    } else {
+      item.textContent = file.name;
+    }
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-file-btn';
+    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+    removeBtn.onclick = () => {
+      milestoneFilesArray.splice(idx, 1);
+      renderMilestoneFilePreview();
+    };
+    item.appendChild(removeBtn);
+    milestoneFilePreview.appendChild(item);
+  });
+}
+// Reset file array and preview on open
+const origOpenMilestoneModal = openMilestoneModal;
+openMilestoneModal = function(projectId) {
+  milestoneFilesArray = [];
+  renderMilestoneFilePreview();
+  origOpenMilestoneModal(projectId);
+};
+const origEditMilestone = editMilestone;
+editMilestone = function(projectId, index) {
+  const m = projects.find(p => p.id === projectId).milestones[index];
+  milestoneFilesArray = m.files ? Array.from(m.files) : [];
+  renderMilestoneFilePreview();
+  origEditMilestone(projectId, index);
+};
+
+// Helper to refresh contractor dropdown
+function refreshContractorDropdown(selected) {
+  const select = document.getElementById('formContractor');
+  if (!select) return;
+  // Get unique contractor names from projects
+  const contractors = Array.from(new Set(projects.map(p => p.contractor).filter(Boolean)));
+  select.innerHTML = '';
+  if (contractors.length === 0) {
+    select.innerHTML = '<option value="">No contractors available</option>';
+  } else {
+    select.innerHTML = '<option value="">Select contractor</option>' + contractors.map(c => `<option value="${c}">${c}</option>`).join('');
+  }
+  if (selected) select.value = selected;
+}
+
+function renderStatsCharts() {
+  // Demo data
+  const statusCounts = {
+    Active: projects.filter(p => p.status === 'Active').length,
+    Completed: projects.filter(p => p.status === 'Completed').length,
+    Delayed: projects.filter(p => p.status === 'Delayed').length,
+    Planning: projects.filter(p => p.status === 'Planning').length
+  };
+  const pieCtx = document.getElementById('projectsPieChart').getContext('2d');
+  if (window.pieChart) window.pieChart.destroy();
+  window.pieChart = new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: Object.keys(statusCounts),
+      datasets: [{
+        data: Object.values(statusCounts),
+        backgroundColor: ['#1e88e5','#43a047','#fbc02d','#e53935'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { position: 'bottom' },
+        title: { display: true, text: 'Projects by Status' }
+      }
+    }
+  });
+  // Bar chart: Budget by Category
+  const categories = Array.from(new Set(projects.map(p => p.category)));
+  const budgetByCategory = categories.map(cat => projects.filter(p => p.category === cat).reduce((sum, p) => sum + (p.budget || 0), 0));
+  const barCtx = document.getElementById('budgetBarChart').getContext('2d');
+  if (window.barChart) window.barChart.destroy();
+  window.barChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: categories.map(c => c.charAt(0).toUpperCase() + c.slice(1)),
+      datasets: [{
+        label: 'Budget (R)',
+        data: budgetByCategory,
+        backgroundColor: '#1e88e5',
+        borderRadius: 8
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'Budget by Category' }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+    </script>
+</body>
+</html> 

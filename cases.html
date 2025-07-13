@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cases of Public Interest - ProgressWatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        body { font-family: 'Open Sans', sans-serif; background: #f5f7fa; margin: 0; color: #333; }
+        .header { background: linear-gradient(135deg, #1e88e5, #1976d2); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 700; color: white; text-decoration: none; display: flex; align-items: center; }
+        .logo i { margin-right: 0.5rem; font-size: 1.5rem; }
+        .nav-menu { display: flex; list-style: none; gap: 2rem; }
+        .nav-menu a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s ease; position: relative; }
+        .nav-menu a:hover { color: #bbdefb; }
+        .nav-menu a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: #bbdefb; transition: width 0.3s ease; }
+        .nav-menu a:hover::after { width: 100%; }
+        .main-content { max-width: 1100px; margin: 2.5rem auto 0; background: white; border-radius: 16px; box-shadow: 0 4px 24px rgba(30,136,229,0.08); padding: 2.5rem 2rem; }
+        .section-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; color: #1e88e5; margin-bottom: 2rem; }
+        .cases-search-bar { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .cases-search-bar input, .cases-search-bar select { padding: 0.7rem 1.2rem; border-radius: 24px; border: 1px solid #b0bec5; font-size: 1rem; background: #f8f9fa; }
+        .cases-list { display: flex; flex-direction: column; gap: 1.5rem; }
+        .case-card { background: #f8f9fa; border-radius: 12px; box-shadow: 0 2px 8px rgba(30,136,229,0.06); padding: 1.5rem 1.5rem 1rem; transition: box-shadow 0.2s; cursor: pointer; border: 1px solid #e0e0e0; }
+        .case-card:hover { box-shadow: 0 8px 32px rgba(30,136,229,0.13); }
+        .case-header { display: flex; align-items: center; justify-content: space-between; }
+        .case-title { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 600; color: #1976d2; }
+        .case-status { padding: 0.3rem 1rem; border-radius: 16px; font-size: 0.95em; font-weight: 600; margin-left: 1rem; }
+        .status-open { background: #e3f2fd; color: #1e88e5; }
+        .status-closed { background: #e8f5e8; color: #43a047; }
+        .status-pending { background: #fff3e0; color: #f57c00; }
+        .case-meta { color: #666; font-size: 0.98em; margin-top: 0.2rem; }
+        .case-summary { margin: 1rem 0 0.5rem; color: #444; }
+        .case-actions { display: flex; gap: 1rem; margin-top: 0.5rem; }
+        .follow-btn { background: #1e88e5; color: white; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .follow-btn:hover { background: #1976d2; }
+        .case-details { margin-top: 1rem; color: #333; border-top: 1px solid #e0e0e0; padding-top: 1rem; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: none; } }
+        @media (max-width: 700px) { .main-content { padding: 1rem; } .cases-search-bar { flex-direction: column; gap: 0.7rem; } }
+        .donate-btn {
+            background: #43a047;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        .donate-btn:hover {
+            background: #388e3c;
+        }
+        .preset-amounts {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+        .preset-btn {
+            background: #e8f5e8;
+            color: #43a047;
+            border: 1.5px solid #43a047;
+            border-radius: 20px;
+            padding: 0.4rem 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .preset-btn.selected, .preset-btn:hover {
+            background: #43a047;
+            color: #fff;
+        }
+        .donate-note {
+            color: #1976d2;
+            font-size: 0.98em;
+            margin-bottom: 1.2rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        .download-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        .download-btn:hover {
+            background: #125ea2;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="home.html" class="logo"><i class="fas fa-chart-line"></i> ProgressWatch</a>
+            <ul class="nav-menu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="cases.html" class="active">Cases</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </header>
+    <main class="main-content">
+        <h1 class="section-title"><i class="fas fa-balance-scale"></i> Cases of Public Interest</h1>
+        <div class="cases-search-bar">
+            <input type="text" id="caseSearchInput" placeholder="Search cases...">
+            <select id="caseCategoryFilter">
+                <option value="">All Categories</option>
+                <option value="Elections">Elections</option>
+                <option value="Transparency">Transparency</option>
+                <option value="Environment">Environment</option>
+                <option value="Education">Education</option>
+            </select>
+            <select id="caseStatusFilter">
+                <option value="">All Statuses</option>
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+                <option value="pending">Pending</option>
+            </select>
+        </div>
+        <div class="cases-list" id="casesList"></div>
+    </main>
+    <!-- Modal for case details -->
+    <div class="modal" id="caseDetailsModal" style="display:none;position:fixed;z-index:3000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:500px;width:95%;padding:2rem;position:relative;box-shadow:0 8px 32px rgba(30,136,229,0.10);">
+            <button class="modal-close" onclick="closeCaseDetailsModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="caseDetailsTitle" style="color:#1e88e5;margin-bottom:0.5rem;"></h2>
+            <div id="caseDetailsMeta" style="color:#666;font-size:1em;margin-bottom:1rem;"></div>
+            <div id="caseDetailsStatus" style="margin-bottom:1rem;"></div>
+            <div id="caseDetailsSummary" style="margin-bottom:1rem;"></div>
+            <div id="caseDetailsFull" style="margin-bottom:1.5rem;"></div>
+            <div id="caseDetailsUpdates" style="background:#f8f9fa;padding:1rem;border-radius:8px;color:#1976d2;font-size:0.98em;">
+                <strong>Updates:</strong>
+                <div style="color:#555;margin-top:0.5rem;">No updates yet.</div>
+            </div>
+            <div style="margin-top:2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">
+                <button class="donate-btn" onclick="openDonateModal()"><i class='fas fa-hand-holding-heart'></i> Donate</button>
+                <button class="download-btn" onclick="downloadCaseFiles()"><i class='fas fa-download'></i> Download Case Files</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for no case files -->
+    <div class="modal" id="noFilesModal" style="display:none;position:fixed;z-index:4100;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:350px;width:90%;padding:2rem;position:relative;box-shadow:0 8px 32px rgba(30,136,229,0.10);text-align:center;">
+            <button class="modal-close" onclick="closeNoFilesModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <div style="font-size:2.5rem;color:#1976d2;margin-bottom:1rem;"><i class="fas fa-folder-open"></i></div>
+            <h3 style="color:#1e88e5;margin-bottom:0.5rem;">No Files Available</h3>
+            <div style="color:#555;font-size:1.1rem;">There are no files available for this case.</div>
+        </div>
+    </div>
+    <!-- Modal for donations -->
+    <div class="modal" id="donateModal" style="display:none;position:fixed;z-index:4000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:400px;width:95%;padding:2rem;position:relative;box-shadow:0 8px 32px rgba(67,160,71,0.10);text-align:center;">
+            <button class="modal-close" onclick="closeDonateModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#43a047;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 style="color:#43a047;margin-bottom:1rem;">Support This Case</h2>
+            <div class="donate-note"><i class="fas fa-info-circle"></i> Your donation will be sent directly to the plaintiff organization.</div>
+            <form id="donateForm">
+                <div class="preset-amounts">
+                    <button type="button" class="preset-btn" onclick="selectPresetAmount(50)">R50</button>
+                    <button type="button" class="preset-btn" onclick="selectPresetAmount(100)">R100</button>
+                    <button type="button" class="preset-btn" onclick="selectPresetAmount(250)">R250</button>
+                    <button type="button" class="preset-btn" onclick="selectPresetAmount(500)">R500</button>
+                </div>
+                <input type="number" id="donateAmount" min="1" placeholder="Custom Amount (R)" required style="width:100%;padding:0.7rem;margin-bottom:1rem;border-radius:8px;border:1px solid #e0e0e0;font-size:1.1rem;">
+                <input type="text" id="donateName" placeholder="Your Name (optional)" style="width:100%;padding:0.7rem;margin-bottom:1rem;border-radius:8px;border:1px solid #e0e0e0;font-size:1.1rem;">
+                <input type="email" id="donateEmail" placeholder="Your Email (optional)" style="width:100%;padding:0.7rem;margin-bottom:1.5rem;border-radius:8px;border:1px solid #e0e0e0;font-size:1.1rem;">
+                <button type="submit" class="donate-btn" style="width:100%;font-size:1.1rem;"><i class='fas fa-donate'></i> Donate</button>
+            </form>
+            <div id="donateThankYou" style="display:none;margin-top:1.5rem;color:#43a047;font-weight:600;font-size:1.1rem;"><i class='fas fa-check-circle'></i> Thank you for your support!</div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2024 ProgressWatch. All rights reserved. | Promoting transparency in public projects.</p>
+        </div>
+    </footer>
+    <style>
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+            text-align: left;
+            margin-top: 3rem;
+        }
+        @media (max-width: 900px) {
+        }
+        @media (max-width: 600px) {
+        }
+        .footer-section h4 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+            color: #1e88e5;
+        }
+        .footer-bottom {
+            border-top: 1px solid #555;
+            padding-top: 1rem;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+    <script>
+    // Demo cases data
+    const demoCases = [
+        {
+            title: "Electoral Reform Challenge",
+            plaintiff: "Democratic Action Party",
+            summary: "A case challenging the constitutionality of recent changes to the national electoral law, arguing it undermines fair representation.",
+            status: "open",
+            date: "2024-06-01",
+            details: "The Democratic Action Party filed this case in the Constitutional Court, seeking to overturn amendments to the electoral law passed in May 2024. The party claims the changes disproportionately affect smaller parties and violate the principle of proportional representation. The case has attracted significant media attention and public debate.",
+            updates: [
+                { date: "2024-06-05", message: "Court hearing scheduled for June 20, 2024." },
+                { date: "2024-06-10", message: "Additional evidence submitted by plaintiff." }
+            ]
+        },
+        {
+            title: "Public Procurement Transparency",
+            plaintiff: "Civic Watch NGO",
+            summary: "A lawsuit demanding greater transparency in government procurement processes, following reports of irregularities in major contracts.",
+            status: "pending",
+            date: "2024-05-18",
+            details: "Civic Watch NGO is calling for the release of all procurement documents related to the 2023-2024 infrastructure projects. The case aims to set a precedent for open access to public contract information. The government has requested an extension to respond to the suit.",
+            updates: [
+                { date: "2024-05-22", message: "Government requested extension to respond to the suit." }
+            ]
+        },
+        {
+            title: "Environmental Protection Mandate",
+            plaintiff: "Green Future Coalition",
+            summary: "A case filed to enforce stricter environmental regulations on industrial polluters in the River Valley region.",
+            status: "closed",
+            date: "2024-04-10",
+            details: "The Green Future Coalition successfully argued that several factories were exceeding legal pollution limits. The court ordered immediate remediation and imposed fines. This case is seen as a landmark victory for environmental advocacy groups.",
+            updates: []
+        },
+        {
+            title: "Education Funding Equity",
+            plaintiff: "Parents for Equal Schools",
+            summary: "A class action suit demanding equitable funding for rural and urban public schools.",
+            status: "open",
+            date: "2024-06-10",
+            details: "Parents for Equal Schools allege that current funding formulas disadvantage rural schools, leading to disparities in resources and outcomes. The case seeks a court order to revise the funding model and ensure fair distribution of education funds.",
+            updates: [
+                { date: "2024-06-12", message: "Case filed in High Court." }
+            ]
+        },
+    ];
+    let expandedCaseIndex = null;
+    function renderCases() {
+        const search = document.getElementById('caseSearchInput').value.toLowerCase();
+        const status = document.getElementById('caseStatusFilter').value;
+        const category = document.getElementById('caseCategoryFilter').value;
+        const list = document.getElementById('casesList');
+        list.innerHTML = '';
+        demoCases.forEach((c, i) => {
+            const matchesSearch = c.title.toLowerCase().includes(search) || c.plaintiff.toLowerCase().includes(search) || c.summary.toLowerCase().includes(search);
+            const matchesStatus = !status || c.status === status;
+            const matchesCategory = !category || c.category === category;
+            if (matchesSearch && matchesStatus && matchesCategory) {
+                const card = document.createElement('div');
+                card.className = 'case-card';
+                card.onclick = () => {
+                    expandedCaseIndex = expandedCaseIndex === i ? null : i;
+                    renderCases();
+                };
+                card.innerHTML = `
+                    <div class="case-header">
+                        <span class="case-title">${c.title}</span>
+                        <span class="case-status status-${c.status}">${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span>
+                    </div>
+                    <div class="case-meta">Filed by <strong>${c.plaintiff}</strong> &middot; ${new Date(c.date).toLocaleDateString()}</div>
+                    <div class="case-summary">${c.summary}</div>
+                    <div class="case-actions">
+                        <button class="follow-btn"><i class="fas fa-bell"></i> Follow</button>
+                        <button class="donate-btn" onclick="event.stopPropagation();openDonateModal()"><i class='fas fa-hand-holding-heart'></i> Donate</button>
+                        <button class="follow-btn" style="background:#43a047;" onclick="event.stopPropagation();openCaseDetailsModal(${i})"><i class='fas fa-eye'></i> View Details</button>
+                    </div>
+                    ${expandedCaseIndex === i ? `<div class="case-details">${c.details}</div>` : ''}
+                `;
+                list.appendChild(card);
+            }
+        });
+    }
+    function openCaseDetailsModal(idx) {
+        const c = demoCases[idx];
+        document.getElementById('caseDetailsTitle').textContent = c.title;
+        document.getElementById('caseDetailsMeta').innerHTML = `Filed by <strong>${c.plaintiff}</strong> &middot; ${new Date(c.date).toLocaleDateString()}`;
+        document.getElementById('caseDetailsStatus').innerHTML = `<strong>Status:</strong> <span class='case-status status-${c.status}'>${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span>`;
+        document.getElementById('caseDetailsSummary').innerHTML = `<strong>Summary:</strong> ${c.summary}`;
+        document.getElementById('caseDetailsFull').innerHTML = `<strong>Details:</strong> ${c.details}`;
+        // Updates
+        const updatesDiv = document.getElementById('caseDetailsUpdates');
+        if (c.updates && c.updates.length > 0) {
+            updatesDiv.innerHTML = `<strong>Updates:</strong>` +
+                c.updates.map(u => `<div style='color:#555;margin-top:0.5rem;'><span style='color:#1976d2;font-weight:600;'>${new Date(u.date).toLocaleDateString()}</span>: ${u.message}</div>`).join('');
+        } else {
+            updatesDiv.innerHTML = `<strong>Updates:</strong><div style='color:#555;margin-top:0.5rem;'>No updates yet.</div>`;
+        }
+        document.getElementById('caseDetailsModal').style.display = 'flex';
+    }
+    function closeCaseDetailsModal() {
+        document.getElementById('caseDetailsModal').style.display = 'none';
+    }
+    function openDonateModal() {
+        document.getElementById('donateModal').style.display = 'flex';
+        document.getElementById('donateForm').style.display = '';
+        document.getElementById('donateThankYou').style.display = 'none';
+        document.getElementById('donateForm').reset();
+        selectedPreset = null; // Reset preset when opening modal
+        document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('selected'));
+    }
+    function closeDonateModal() {
+        document.getElementById('donateModal').style.display = 'none';
+    }
+    let selectedPreset = null;
+    function selectPresetAmount(amount) {
+        document.getElementById('donateAmount').value = amount;
+        selectedPreset = amount;
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.classList.toggle('selected', btn.textContent.replace(/\D/g,'') == amount);
+        });
+    }
+    document.getElementById('donateAmount').addEventListener('input', function() {
+        selectedPreset = null;
+        document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('selected'));
+    });
+    document.getElementById('caseSearchInput').addEventListener('input', renderCases);
+    document.getElementById('caseStatusFilter').addEventListener('change', renderCases);
+    document.getElementById('caseCategoryFilter').addEventListener('change', renderCases);
+    document.getElementById('donateForm').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('donateForm').style.display = 'none';
+        document.getElementById('donateThankYou').style.display = 'block';
+        setTimeout(closeDonateModal, 2000);
+    };
+    renderCases();
+    function downloadCaseFiles() {
+        document.getElementById('noFilesModal').style.display = 'flex';
+    }
+    function closeNoFilesModal() {
+        document.getElementById('noFilesModal').style.display = 'none';
+    }
+    </script>
+</body>
+</html> 

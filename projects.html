@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - ProgressWatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Open Sans', sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #1e88e5, #1976d2); color: white; padding: 1rem 0; position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 700; color: white; text-decoration: none; display: flex; align-items: center; }
+        .logo i { margin-right: 0.5rem; font-size: 1.5rem; }
+        .nav-menu { display: flex; list-style: none; gap: 2rem; }
+        .nav-menu a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s ease; position: relative; }
+        .nav-menu a:hover { color: #bbdefb; }
+        .nav-menu a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: #bbdefb; transition: width 0.3s ease; }
+        .nav-menu a:hover::after { width: 100%; }
+        .main-content { margin-top: 80px; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-family: 'Montserrat', sans-serif; color: #1e88e5; margin-bottom: 2rem; }
+        .filter-bar { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center; }
+        .filter-btn { background: #e3f2fd; color: #1976d2; border: none; border-radius: 20px; padding: 0.5rem 1.5rem; font-size: 1rem; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.2s, color 0.2s; }
+        .filter-btn.active, .filter-btn:hover { background: #1976d2; color: white; }
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .project-card { background: white; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; cursor: pointer; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; width: 100%; max-width: 400px; justify-self: center; }
+        .project-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .project-image { width: 100%; height: 200px; object-fit: cover; border-radius: 10px 10px 0 0; }
+        .project-content { padding: 1.5rem; }
+        .project-card h3 { font-family: 'Montserrat', sans-serif; color: #1e88e5; margin-bottom: 0.5rem; }
+        .project-creator { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
+        .project-description { color: #555; margin-bottom: 1.5rem; line-height: 1.6; }
+        .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #43a047, #66bb6a); transition: width 0.3s; }
+        .progress-text { font-size: 0.9rem; color: #666; text-align: right; }
+        .project-status { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; margin-top: 1rem; }
+        .status-active { background: #e8f5e8; color: #43a047; }
+        .status-completed { background: #e3f2fd; color: #1e88e5; }
+        .status-pending { background: #fff3e0; color: #f57c00; }
+        .status-delayed { background: #ffebee; color: #d32f2f; }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+        .modal-header {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+        }
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .modal-close:hover {
+            background: rgba(0,0,0,0.9);
+        }
+        .modal-body {
+            padding: 2rem;
+        }
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            color: #1e88e5;
+            margin-bottom: 0.5rem;
+        }
+        .modal-creator {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .modal-description {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .modal-progress {
+            margin-bottom: 2rem;
+        }
+        .modal-progress h4 {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .modal-progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        .modal-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #43a047, #66bb6a);
+            transition: width 0.8s ease;
+        }
+        .modal-progress-text {
+            font-size: 1rem;
+            color: #666;
+            text-align: right;
+            font-weight: 600;
+        }
+        .modal-financial {
+            margin-bottom: 2rem;
+        }
+        .modal-financial h4 {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .financial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .financial-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .financial-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .financial-value {
+            font-weight: 500;
+            color: #43a047;
+            white-space: nowrap;
+        }
+        .modal-milestones {
+            margin-bottom: 2rem;
+        }
+        .modal-milestones h4 {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .milestone {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #43a047;
+        }
+        .milestone.pending {
+            border-left-color: #f57c00;
+            background: #fff8f0;
+        }
+        .milestone-icon {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            color: #43a047;
+        }
+        .milestone.pending .milestone-icon {
+            color: #f57c00;
+        }
+        .milestone-content {
+            flex: 1;
+        }
+        .milestone-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+        .milestone-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .modal-btn-primary {
+            background: #1e88e5;
+            color: white;
+        }
+        .modal-btn-primary:hover {
+            background: #1976d2;
+        }
+        .modal-btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+        .modal-btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+            text-align: left;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        .footer-section h4 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+            color: #1e88e5;
+        }
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            line-height: 1.8;
+        }
+        .footer-section a:hover {
+            color: #1e88e5;
+        }
+        .footer-bottom {
+            border-top: 1px solid #555;
+            padding-top: 1rem;
+            color: #999;
+            text-align: center;
+        }
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: #f0f4fa;
+            border-radius: 24px;
+            box-shadow: 0 2px 12px rgba(30,136,229,0.07);
+            padding: 1.2rem 2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .filter-controls input[type="text"],
+        .filter-controls select {
+            padding: 0.7rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid #b0bec5;
+            font-size: 1rem;
+            outline: none;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 4px rgba(30,136,229,0.04);
+        }
+        .filter-controls input[type="text"]:focus,
+        .filter-controls select:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px #90caf9;
+        }
+        .filter-controls input[type="text"]::placeholder {
+            color: #90a4ae;
+            opacity: 1;
+        }
+        .filter-controls select:hover,
+        .filter-controls input[type="text"]:hover {
+            border-color: #64b5f6;
+        }
+        @media (max-width: 768px) { .main-content { padding: 1rem; } .projects-grid { grid-template-columns: 1fr; } .footer-content { grid-template-columns: 1fr; text-align: center; } }
+        @media (max-width: 900px) {
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="home.html" class="logo">
+                <i class="fas fa-chart-line"></i>
+                ProgressWatch
+            </a>
+            <ul class="nav-menu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="cases.html">Cases</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="main-content">
+        <div class="container">
+            <h1>Projects</h1>
+            <div class="filter-controls">
+                <input type="text" id="searchInput" placeholder="Search projects...">
+                <select id="categorySelect">
+                    <option value="all">All Categories</option>
+                    <option value="infrastructure">Infrastructure</option>
+                    <option value="transport">Transport</option>
+                    <option value="education">Education</option>
+                    <option value="housing">Housing</option>
+                    <option value="climate">Climate</option>
+                    <option value="healthcare">Healthcare</option>
+                </select>
+                <select id="statusSelect">
+                    <option value="all">All Statuses</option>
+                    <option value="planning">Planning</option>
+                    <option value="active">Active</option>
+                    <option value="completed">Completed</option>
+                    <option value="delayed">Delayed</option>
+                </select>
+                <select id="provinceSelect">
+                    <option value="all">All Provinces</option>
+                    <option value="gauteng">Gauteng</option>
+                    <option value="western cape">Western Cape</option>
+                    <option value="kwazulu-natal">KwaZulu-Natal</option>
+                    <option value="eastern cape">Eastern Cape</option>
+                    <option value="limpopo">Limpopo</option>
+                    <option value="free state">Free State</option>
+                    <option value="mpumalanga">Mpumalanga</option>
+                    <option value="north west">North West</option>
+                    <option value="northern cape">Northern Cape</option>
+                </select>
+            </div>
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Project cards inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About ProgressWatch</h4>
+                <p>We believe in transparency and accountability in public projects. Our platform helps citizens track the progress of initiatives that matter to their communities.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <p><a href="home.html">Home</a></p>
+                <p><a href="projects.html">Projects</a></p>
+                <p><a href="cases.html">Cases</a></p>
+                <p><a href="#about">About Us</a></p>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <p><a href="#">Blog</a></p>
+                <p><a href="#">FAQs</a></p>
+                <p><a href="#">Support</a></p>
+                <p><a href="#">Newsletter</a></p>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p>Email: info@progresswatch.org</p>
+                <p>Phone: (555) 123-4567</p>
+                <p>Address: 123 Civic Center, Democracy City</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ProgressWatch. All rights reserved. | Promoting transparency in public projects.</p>
+        </div>
+    </footer>
+    <!-- Project Detail Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="" alt="Project Image" class="modal-image" id="modalImage">
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <p class="modal-creator" id="modalCreator"></p>
+                <p class="modal-description" id="modalDescription"></p>
+                
+                <div class="modal-progress">
+                    <h4>Progress Overview</h4>
+                    <div class="modal-progress-bar">
+                        <div class="modal-progress-fill" id="modalProgressFill"></div>
+                    </div>
+                    <p class="modal-progress-text" id="modalProgressText"></p>
+                </div>
+
+                <div class="modal-financial">
+                    <h4>Financial Information</h4>
+                    <div class="financial-grid">
+                        <div class="financial-item">
+                            <span class="financial-label">Project Budget:</span>
+                            <span class="financial-value" id="modalBudget"></span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="financial-label">Amount Spent:</span>
+                            <span class="financial-value" id="modalSpent"></span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="financial-label">Contractor:</span>
+                            <span class="financial-value" id="modalContractor"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-milestones">
+                    <h4>Project Milestones</h4>
+                    <div id="modalMilestones"></div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="modal-btn modal-btn-primary" onclick="followProject()">
+                        <i class="fas fa-bell"></i> Follow Project
+                    </button>
+                    <button class="modal-btn modal-btn-secondary" onclick="shareProject()">
+                        <i class="fas fa-share"></i> Share Project
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const projects = [
+            { title: "City Park Renovation", creator: "by Municipal Council", description: "Complete renovation of Central Park including new playground equipment, walking paths, and recreational facilities.", progress: 75, image: "https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800", status: "Active", category: "infrastructure", province: "gauteng", budget: "R 2,500,000" },
+            { title: "Public Transport Expansion", creator: "by Transportation Authority", description: "Expansion of bus routes to underserved communities and implementation of new rapid transit system.", progress: 45, image: "https://images.pexels.com/photos/544970/pexels-photo-544970.jpeg?auto=compress&cs=tinysrgb&w=800", status: "Delayed", category: "transport", province: "western cape", budget: "R 15,000,000" },
+            { title: "Digital Education Initiative", creator: "by Department of Education", description: "Providing tablets and internet access to all students in public schools across the district.", progress: 100, image: "https://images.pexels.com/photos/289740/pexels-photo-289740.jpeg?auto=compress&cs=tinysrgb&w=800", status: "Completed", category: "education", province: "kwazulu-natal", budget: "R 8,500,000" },
+            { title: "Affordable Housing Project", creator: "by Housing Development Corp", description: "Construction of 500 affordable housing units for low-income families in the downtown area.", progress: 25, image: "https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg?auto=compress&cs=tinysrgb&w=800", status: "Active", category: "housing", province: "eastern cape", budget: "R 45,000,000" },
+            { title: "Climate Action Plan", creator: "by Environmental Agency", description: "Implementation of renewable energy systems and carbon reduction initiatives across the city.", progress: 15, image: "https://images.pexels.com/photos/3850512/pexels-photo-3850512.jpeg?auto=compress&cs=tinysrgb&w=800", status: "Planning", category: "climate", province: "limpopo", budget: "R 12,000,000" },
+            { title: "Healthcare Access Improvement", creator: "by Health Department", description: "Establishing new community health centers and mobile clinics in rural areas.", progress: 60, image: "https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=800", status: "Active", category: "healthcare", province: "free state", budget: "R 6,800,000" }
+        ];
+        // Project data for modal display with detailed descriptions and milestones
+        const projectData = {
+            infrastructure: {
+                title: "City Park Renovation",
+                creator: "Municipal Council",
+                description: "Complete renovation of Central Park including new playground equipment, walking paths, and recreational facilities. This comprehensive project aims to transform our downtown park into a modern, accessible space for families and community gatherings. The renovation includes eco-friendly landscaping, energy-efficient lighting, and inclusive play areas designed for children of all abilities.",
+                progress: 75,
+                image: "https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800",
+                budget: "R 2,500,000",
+                spent: "R 1,875,000",
+                contractor: "GreenLand Construction Ltd",
+                milestones: [
+                    { title: "Design and Planning", date: "Completed - March 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Site Plan' } ] },
+                    { title: "Permit Acquisition", date: "Completed - April 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Permit Documents' } ] },
+                    { title: "Ground Preparation", date: "Completed - May 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Before Ground Preparation' }, { type: 'image', url: 'https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'After Ground Preparation' } ] },
+                    { title: "Playground Installation", date: "In Progress - June 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Playground Installation Progress' } ] },
+                    { title: "Landscaping and Pathways", date: "Scheduled - August 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Landscaping Progress' } ] },
+                    { title: "Final Inspection", date: "Scheduled - September 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Final Inspection Report' } ] }
+                ]
+            },
+            transport: {
+                title: "Public Transport Expansion",
+                creator: "Transportation Authority",
+                description: "Expansion of bus routes to underserved communities and implementation of new rapid transit system. This ambitious project aims to improve public transportation accessibility and reduce travel times for residents across the city.",
+                progress: 45,
+                image: "https://images.pexels.com/photos/544970/pexels-photo-544970.jpeg?auto=compress&cs=tinysrgb&w=800",
+                budget: "R 15,000,000",
+                spent: "R 6,750,000",
+                contractor: "MetroTrans Solutions",
+                milestones: [
+                    { title: "Route Planning", date: "Completed - January 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/544970/pexels-photo-544970.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Route Map' } ] },
+                    { title: "Permit Acquisition", date: "Completed - February 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/544970/pexels-photo-544970.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Permit Documents' } ] },
+                    { title: "Ground Preparation", date: "In Progress - March 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/544970/pexels-photo-544970.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Ground Preparation Progress' } ] },
+                    { title: "Bus Fleet Acquisition", date: "Scheduled - April 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/544970/pexels-photo-544970.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Bus Fleet Acquisition Plan' } ] },
+                    { title: "Route Implementation", date: "Scheduled - May 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/544970/pexels-photo-544970.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Route Implementation Progress' } ] },
+                    { title: "Final Inspection", date: "Scheduled - June 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/544970/pexels-photo-544970.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Final Inspection Report' } ] }
+                ]
+            },
+            education: {
+                title: "Digital Education Initiative",
+                creator: "Department of Education",
+                description: "Providing tablets and internet access to all students in public schools across the district. This project is crucial for bridging the digital divide and ensuring equal educational opportunities for all children.",
+                progress: 100,
+                image: "https://images.pexels.com/photos/289740/pexels-photo-289740.jpeg?auto=compress&cs=tinysrgb&w=800",
+                budget: "R 8,500,000",
+                spent: "R 8,500,000",
+                contractor: "TechEdu Systems",
+                milestones: [
+                    { title: "Tablet Distribution", date: "Completed - January 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/289740/pexels-photo-289740.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Tablet Distribution Progress' } ] },
+                    { title: "Internet Infrastructure", date: "Completed - February 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/289740/pexels-photo-289740.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Internet Infrastructure Progress' } ] },
+                    { title: "Training Sessions", date: "Completed - March 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/289740/pexels-photo-289740.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Training Session Photos' } ] },
+                    { title: "Monitoring and Evaluation", date: "In Progress - April 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/289740/pexels-photo-289740.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Monitoring and Evaluation Progress' } ] },
+                    { title: "Sustainability Plan", date: "Scheduled - May 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/289740/pexels-photo-289740.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Sustainability Plan' } ] },
+                    { title: "Final Report", date: "Scheduled - June 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/289740/pexels-photo-289740.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Final Report' } ] }
+                ]
+            },
+            housing: {
+                title: "Affordable Housing Project",
+                creator: "Housing Development Corp",
+                description: "Construction of 500 affordable housing units for low-income families in the downtown area. This project is a critical step towards addressing housing affordability and improving living conditions for vulnerable populations.",
+                progress: 25,
+                image: "https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg?auto=compress&cs=tinysrgb&w=800",
+                budget: "R 45,000,000",
+                spent: "R 11,250,000",
+                contractor: "Community Builders Inc",
+                milestones: [
+                    { title: "Site Acquisition", date: "Completed - January 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Site Acquisition Progress' } ] },
+                    { title: "Permit Acquisition", date: "Completed - February 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Permit Documents' } ] },
+                    { title: "Foundation Work", date: "In Progress - March 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Foundation Work Progress' } ] },
+                    { title: "Construction", date: "Scheduled - April 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Construction Progress' } ] },
+                    { title: "Final Inspection", date: "Scheduled - May 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Final Inspection Report' } ] },
+                    { title: "Completion", date: "Scheduled - June 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Completion Photos' } ] }
+                ]
+            },
+            climate: {
+                title: "Climate Action Plan",
+                creator: "Environmental Agency",
+                description: "Implementation of renewable energy systems and carbon reduction initiatives across the city. This comprehensive plan aims to reduce greenhouse gas emissions and promote sustainable living.",
+                progress: 15,
+                image: "https://images.pexels.com/photos/3850512/pexels-photo-3850512.jpeg?auto=compress&cs=tinysrgb&w=800",
+                budget: "R 12,000,000",
+                spent: "R 1,800,000",
+                contractor: "EcoEnergy Solutions",
+                milestones: [
+                    { title: "Policy Development", date: "Completed - January 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/3850512/pexels-photo-3850512.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Policy Development Report' } ] },
+                    { title: "Funding Allocation", date: "Completed - February 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/3850512/pexels-photo-3850512.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Funding Allocation Report' } ] },
+                    { title: "Project Selection", date: "In Progress - March 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/3850512/pexels-photo-3850512.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Project Selection Progress' } ] },
+                    { title: "Implementation", date: "Scheduled - April 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/3850512/pexels-photo-3850512.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Implementation Progress' } ] },
+                    { title: "Monitoring", date: "Scheduled - May 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/3850512/pexels-photo-3850512.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Monitoring Progress' } ] },
+                    { title: "Final Report", date: "Scheduled - June 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/3850512/pexels-photo-3850512.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Final Report' } ] }
+                ]
+            },
+            healthcare: {
+                title: "Healthcare Access Improvement",
+                creator: "Health Department",
+                description: "Establishing new community health centers and mobile clinics in rural areas. This initiative aims to improve healthcare accessibility and reduce health disparities.",
+                progress: 60,
+                image: "https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=800",
+                budget: "R 6,800,000",
+                spent: "R 4,080,000",
+                contractor: "HealthCare Infrastructure Ltd",
+                milestones: [
+                    { title: "Site Selection", date: "Completed - January 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Site Selection Report' } ] },
+                    { title: "Permit Acquisition", date: "Completed - February 2024", completed: true, media: [ { type: 'image', url: 'https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Permit Documents' } ] },
+                    { title: "Construction", date: "In Progress - March 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Construction Progress' } ] },
+                    { title: "Equipment Installation", date: "Scheduled - April 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Equipment Installation Plan' } ] },
+                    { title: "Training", date: "Scheduled - May 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Training Progress' } ] },
+                    { title: "Final Inspection", date: "Scheduled - June 2024", completed: false, media: [ { type: 'image', url: 'https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=800', title: 'Final Inspection Report' } ] }
+                ]
+            }
+        };
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categorySelect').value;
+            const status = document.getElementById('statusSelect').value;
+            const province = document.getElementById('provinceSelect').value;
+            grid.innerHTML = '';
+            const filtered = projects.filter(p =>
+                (category === 'all' || p.category === category) &&
+                (status === 'all' || p.status.toLowerCase() === status) &&
+                (province === 'all' || p.province === province) &&
+                (
+                    p.title.toLowerCase().includes(search) ||
+                    p.creator.toLowerCase().includes(search) ||
+                    p.description.toLowerCase().includes(search)
+                )
+            );
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #888; font-size: 1.2rem; padding: 2rem 0;"><i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.5;"></i>No projects found matching your criteria.</div>';
+            } else {
+                filtered.forEach(project => {
+                    grid.innerHTML += `
+                    <div class="project-card" data-category="${project.category}" data-status="${project.status.toLowerCase()}" data-province="${project.province}" data-project="${project.category}">
+                        <img src="${project.image}" alt="${project.title}" class="project-image">
+                        <div class="project-content">
+                            <h3>${project.title}</h3>
+                            <p class="project-creator">${project.creator}</p>
+                            <p class="project-description">${project.description}</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${project.progress}%"></div>
+                            </div>
+                            <p class="progress-text">${project.progress}% Complete</p>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;">
+                                <div style="font-size:0.95em;color:#1976d2;font-weight:600;">${project.province.replace(/\b\w/g, l => l.toUpperCase())}</div>
+                                <div style="font-size:0.95em;color:#43a047;font-weight:600;">Budget: ${project.budget}</div>
+                            </div>
+                            <span class="project-status status-${project.status.toLowerCase()}">${project.status}</span>
+                        </div>
+                    </div>
+                    `;
+                });
+                // Add click event listeners to the newly rendered project cards
+                document.querySelectorAll('.project-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const projectId = this.getAttribute('data-project');
+                        displayProjectDetails(projectId);
+                    });
+                });
+            }
+        }
+        // Function to display project details in the modal
+        function displayProjectDetails(projectId) {
+            const project = projectData[projectId];
+            document.getElementById('modalImage').src = project.image;
+            document.getElementById('modalTitle').textContent = project.title;
+            document.getElementById('modalCreator').textContent = `by ${project.creator}`;
+            document.getElementById('modalDescription').textContent = project.description;
+
+            // Update progress bar
+            const modalProgressFill = document.getElementById('modalProgressFill');
+            modalProgressFill.style.width = `${project.progress}%`;
+            document.getElementById('modalProgressText').textContent = `${project.progress}% Complete`;
+
+            // Update budget and financial information
+            document.getElementById('modalBudget').textContent = project.budget;
+            document.getElementById('modalSpent').textContent = project.spent;
+            document.getElementById('modalContractor').textContent = project.contractor;
+
+            // Display milestones
+            const modalMilestonesDiv = document.getElementById('modalMilestones');
+            modalMilestonesDiv.innerHTML = ''; // Clear previous milestones
+            project.milestones.forEach(milestone => {
+                const milestoneElement = document.createElement('div');
+                milestoneElement.classList.add('milestone');
+                if (!milestone.completed) {
+                    milestoneElement.classList.add('pending');
+                }
+                milestoneElement.innerHTML = `
+                    <div class="milestone-icon">
+                        ${milestone.completed ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-clock"></i>'}
+                    </div>
+                    <div class="milestone-content">
+                        <div class="milestone-title">${milestone.title}</div>
+                        <div class="milestone-date">${milestone.date}</div>
+                    </div>
+                `;
+                modalMilestonesDiv.appendChild(milestoneElement);
+            });
+
+            // Show modal
+            document.getElementById('projectModal').classList.add('show');
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById('projectModal').classList.remove('show');
+        }
+
+        // Function to follow a project (example)
+        function followProject() {
+            alert('You have followed this project!');
+        }
+
+        // Function to share a project (example)
+        function shareProject() {
+            alert('You have shared this project!');
+        }
+
+        // Close modal when clicking outside of it
+        document.getElementById('projectModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        document.getElementById('searchInput').addEventListener('input', renderProjects);
+        document.getElementById('categorySelect').addEventListener('change', renderProjects);
+        document.getElementById('statusSelect').addEventListener('change', renderProjects);
+        document.getElementById('provinceSelect').addEventListener('change', renderProjects);
+        renderProjects();
+    </script>
+</body>
+</html> 
