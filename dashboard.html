@@ -876,15 +876,72 @@
             </div>
             <div class="dashboard-section" id="analyticsSection" style="display: none;">
                 <h2><i class="fas fa-chart-pie"></i> Analytics</h2>
-                <div id="statsCharts" style="min-height:200px;color:#888;">
-                    <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
-                        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
-                            <canvas id="projectsPieChart" width="350" height="300"></canvas>
-                        </div>
-                        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:500px;width:100%;margin-bottom:2rem;">
-                            <canvas id="budgetBarChart" width="450" height="300"></canvas>
-                        </div>
+                <div id="analyticsFilters" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:2rem;">
+                    <div>
+                        <label for="analyticsStartDate" style="font-weight:600;color:#1976d2;">Start Date</label><br>
+                        <input type="date" id="analyticsStartDate" style="padding:0.5rem;border-radius:8px;border:1px solid #b0bec5;">
                     </div>
+                    <div>
+                        <label for="analyticsEndDate" style="font-weight:600;color:#1976d2;">End Date</label><br>
+                        <input type="date" id="analyticsEndDate" style="padding:0.5rem;border-radius:8px;border:1px solid #b0bec5;">
+                    </div>
+                    <div>
+                        <label for="analyticsProvince" style="font-weight:600;color:#1976d2;">Province</label><br>
+                        <select id="analyticsProvince" style="padding:0.5rem;border-radius:8px;border:1px solid #b0bec5;">
+                            <option value="">All Provinces</option>
+                            <option value="gauteng">Gauteng</option>
+                            <option value="western cape">Western Cape</option>
+                            <option value="kwazulu-natal">KwaZulu-Natal</option>
+                            <option value="eastern cape">Eastern Cape</option>
+                            <option value="limpopo">Limpopo</option>
+                            <option value="free state">Free State</option>
+                            <option value="mpumalanga">Mpumalanga</option>
+                            <option value="north west">North West</option>
+                            <option value="northern cape">Northern Cape</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="analyticsMunicipality" style="font-weight:600;color:#1976d2;">Municipality</label><br>
+                        <select id="analyticsMunicipality" style="padding:0.5rem;border-radius:8px;border:1px solid #b0bec5;">
+                            <option value="">All Municipalities</option>
+                            <option value="city of johannesburg">City of Johannesburg</option>
+                            <option value="city of tshwane">City of Tshwane</option>
+                            <option value="ethekwini">eThekwini</option>
+                            <option value="cape town">Cape Town</option>
+                            <option value="nelspruit">Nelspruit</option>
+                            <option value="polokwane">Polokwane</option>
+                            <option value="kimberley">Kimberley</option>
+                            <option value="bloemfontein">Bloemfontein</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="analyticsCards" style="display:flex;flex-wrap:wrap;gap:2rem;margin-bottom:2rem;"></div>
+                <div style="display:flex;flex-wrap:wrap;gap:2rem;align-items:flex-start;">
+                    <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
+                        <canvas id="projectsOverTimeChart" width="350" height="300"></canvas>
+                    </div>
+                    <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
+                        <canvas id="projectsByCategoryChart" width="350" height="300"></canvas>
+                    </div>
+                    <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
+                        <canvas id="topContractorsChart" width="350" height="300"></canvas>
+                    </div>
+                </div>
+                <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:1000px;width:100%;margin-bottom:2rem;">
+                    <h3 style="color:#1976d2;margin-bottom:1rem;">Recent Projects</h3>
+                    <table class="project-table" id="analyticsRecentProjectsTable">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Category</th>
+                                <th>Province</th>
+                                <th>Budget</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
             <div class="dashboard-section" id="casesSection" style="display: none;">
@@ -1773,7 +1830,7 @@ function showSection(sectionName) {
             renderContractors();
             break;
         case 'analytics':
-            renderStatsCharts();
+            renderAnalytics();
             break;
         case 'cases':
             renderCases();
@@ -2036,6 +2093,102 @@ function editCase(id) {
 function deleteCase(id) {
   cases = cases.filter(c => c.id !== id);
   renderCases();
+}
+
+// Add analytics rendering logic after the filters and section
+function getFilteredProjects() {
+    const startDate = document.getElementById('analyticsStartDate').value;
+    const endDate = document.getElementById('analyticsEndDate').value;
+    const province = document.getElementById('analyticsProvince').value.toLowerCase();
+    const municipality = document.getElementById('analyticsMunicipality').value.toLowerCase();
+    // For demo, we don't have municipality in project data, so just filter by province and date
+    return projects.filter(p => {
+        let pass = true;
+        if (province && p.province.toLowerCase() !== province) pass = false;
+        // If you add municipality to project data, filter here as well
+        // Date filter: for demo, use a fake 'created' date based on id
+        if (startDate) {
+            const fakeDate = new Date(2024, 0, p.id * 2); // Jan 2, Jan 4, etc.
+            if (fakeDate < new Date(startDate)) pass = false;
+        }
+        if (endDate) {
+            const fakeDate = new Date(2024, 0, p.id * 2);
+            if (fakeDate > new Date(endDate)) pass = false;
+        }
+        return pass;
+    });
+}
+function renderAnalytics() {
+    const filtered = getFilteredProjects();
+    // Project count by status
+    const statuses = ['Active','Completed','Delayed','Planning'];
+    const statusCounts = statuses.map(s => filtered.filter(p => p.status.toLowerCase() === s.toLowerCase()).length);
+    // Total budget by province
+    const provinces = ["gauteng","western cape","kwazulu-natal","eastern cape","limpopo","free state","mpumalanga","north west","northern cape"];
+    const budgetByProvince = provinces.map(prov => filtered.filter(p => p.province.toLowerCase() === prov).reduce((sum,p)=>sum+(p.budget||0),0));
+    // Top contractors
+    const contractorCounts = {};
+    filtered.forEach(p => { contractorCounts[p.contractor] = (contractorCounts[p.contractor]||0)+1; });
+    const topContractors = Object.entries(contractorCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    // Projects by category
+    const categories = Array.from(new Set(filtered.map(p=>p.category)));
+    const projectsByCategory = categories.map(cat => filtered.filter(p=>p.category===cat).length);
+    // Projects over time (fake dates)
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const projectsByMonth = Array(12).fill(0);
+    filtered.forEach(p => {
+        const fakeMonth = (p.id*2)%12;
+        projectsByMonth[fakeMonth]++;
+    });
+    // Render cards
+    document.getElementById('analyticsCards').innerHTML = `
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-folder-open"></i></div><div class="stat-label">Total Projects</div><div class="stat-value">${filtered.length}</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-label">Active</div><div class="stat-value">${statusCounts[0]}</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-label">Completed</div><div class="stat-value">${statusCounts[1]}</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-label">Delayed</div><div class="stat-value">${statusCounts[2]}</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-lightbulb"></i></div><div class="stat-label">Planning</div><div class="stat-value">${statusCounts[3]}</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-label">Total Budget</div><div class="stat-value">R ${filtered.reduce((sum,p)=>sum+(p.budget||0),0).toLocaleString()}</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div><div class="stat-label">Top Province (Budget)</div><div class="stat-value">${provinces[budgetByProvince.indexOf(Math.max(...budgetByProvince))]||'-'}</div></div>
+    `;
+    // Render charts
+    if(window.projectsOverTimeChartObj) window.projectsOverTimeChartObj.destroy();
+    window.projectsOverTimeChartObj = new Chart(document.getElementById('projectsOverTimeChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: months, datasets: [{ label: 'Projects Started', data: projectsByMonth, backgroundColor: '#1e88e5' }] },
+        options: { plugins: { legend: { display: false }, title: { display: true, text: 'Projects Over Time' } }, scales: { y: { beginAtZero: true } } }
+    });
+    if(window.projectsByCategoryChartObj) window.projectsByCategoryChartObj.destroy();
+    window.projectsByCategoryChartObj = new Chart(document.getElementById('projectsByCategoryChart').getContext('2d'), {
+        type: 'pie',
+        data: { labels: categories, datasets: [{ data: projectsByCategory, backgroundColor: ['#1e88e5','#43a047','#fbc02d','#e53935','#8e24aa','#00acc1'] }] },
+        options: { plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Projects by Category' } } }
+    });
+    if(window.topContractorsChartObj) window.topContractorsChartObj.destroy();
+    window.topContractorsChartObj = new Chart(document.getElementById('topContractorsChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: topContractors.map(tc=>tc[0]), datasets: [{ label: 'Projects', data: topContractors.map(tc=>tc[1]), backgroundColor: '#43a047' }] },
+        options: { plugins: { legend: { display: false }, title: { display: true, text: 'Top Contractors' } }, scales: { y: { beginAtZero: true } } }
+    });
+    // Render recent projects table
+    const recent = filtered.slice(-5).reverse();
+    const tbody = document.querySelector('#analyticsRecentProjectsTable tbody');
+    tbody.innerHTML = recent.map(p=>`<tr><td>${p.title}</td><td>${p.status}</td><td>${p.category}</td><td>${p.province}</td><td>R ${p.budget.toLocaleString()}</td><td>${p.progress}%</td></tr>`).join('');
+}
+// Attach filter listeners
+['analyticsStartDate','analyticsEndDate','analyticsProvince','analyticsMunicipality'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', renderAnalytics);
+});
+// Render analytics on section show
+function showSection(sectionName) {
+    // ... existing code ...
+    switch(sectionName) {
+        // ... existing code ...
+        case 'analytics':
+            renderAnalytics();
+            break;
+        // ... existing code ...
+    }
 }
     </script>
 </body>
