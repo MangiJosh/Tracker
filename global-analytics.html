@@ -183,13 +183,12 @@
                 <li><a href="#keyStats" class="sidebar-link" style="color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; display: block; padding: 0.7rem 0; border-radius: 8px;">Key Stats</a></li>
                 <li><a href="#projectsByProvince" class="sidebar-link" style="color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; display: block; padding: 0.7rem 0; border-radius: 8px;">Projects by Province</a></li>
                 <li><a href="#budgetByCategory" class="sidebar-link" style="color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; display: block; padding: 0.7rem 0; border-radius: 8px;">Budget by Category</a></li>
-                <li><a href="#projectsOverTime" class="sidebar-link" style="color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; display: block; padding: 0.7rem 0; border-radius: 8px;">Projects Over Time</a></li>
                 <li><a href="#topContractors" class="sidebar-link" style="color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; display: block; padding: 0.7rem 0; border-radius: 8px;">Top Contractors</a></li>
                 <li><a href="#projectsByStatus" class="sidebar-link" style="color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; display: block; padding: 0.7rem 0; border-radius: 8px;">Projects by Status</a></li>
                 <li><a href="#recentProjects" class="sidebar-link" style="color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; display: block; padding: 0.7rem 0; border-radius: 8px;">Recent Projects</a></li>
             </ul>
         </aside>
-        <div class="global-analytics-container" style="margin-left: 200px; padding-left: 16px; width: 100%;">
+        <div class="global-analytics-container" style="margin-left: 220px; padding-left: 24px; width: 100%;">
             <div class="header">
                 <h1><i class="fas fa-globe-africa"></i> Global Analytics</h1>
                 <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
@@ -254,7 +253,6 @@
             <div class="charts-section">
                 <div class="chart-card" id="projectsByProvince" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="projectsByProvinceChart" width="400" height="320"></canvas></div>
                 <div class="chart-card" id="budgetByCategory" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="budgetByCategoryChart" width="400" height="320"></canvas></div>
-                <div class="chart-card" id="projectsOverTime" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="projectsOverTimeChart" width="400" height="320"></canvas></div>
             </div>
             <div class="charts-section">
                 <div class="chart-card" id="topContractors" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="topContractorsChart" width="400" height="320"></canvas></div>
@@ -360,20 +358,6 @@ function renderCharts() {
         type: 'bar',
         data: { labels: categories.map(c=>c.charAt(0).toUpperCase()+c.slice(1)), datasets: [{ label: 'Budget (R)', data: budgetByCategory, backgroundColor: '#43a047' }] },
         options: { plugins: { legend: { display: false }, title: { display: true, text: 'Budget by Category' } }, scales: { y: { beginAtZero: true } } }
-    });
-    // Projects Over Time
-    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    const projectsByMonth = Array(12).fill(0);
-    filtered.forEach(p => {
-        const month = new Date(p.created).getMonth();
-        projectsByMonth[month]++;
-    });
-    const ctx3 = document.getElementById('projectsOverTimeChart').getContext('2d');
-    if(window.projectsOverTimeChartObj) window.projectsOverTimeChartObj.destroy();
-    window.projectsOverTimeChartObj = new Chart(ctx3, {
-        type: 'line',
-        data: { labels: months, datasets: [{ label: 'Projects Started', data: projectsByMonth, backgroundColor: 'rgba(30,136,229,0.2)', borderColor: '#1e88e5', fill: true }] },
-        options: { plugins: { legend: { display: false }, title: { display: true, text: 'Projects Over Time' } }, scales: { y: { beginAtZero: true } } }
     });
     // Top Contractors
     const contractorCounts = {};
