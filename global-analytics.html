@@ -331,10 +331,8 @@
         </div>
     </div>
     <div class="modal" id="viewProjectModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-        <div class="modal-content" style="background:white;border-radius:15px;max-width:600px;width:95%;padding:2.5rem;position:relative;">
-            <button class="modal-close" onclick="closeViewProjectModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
-            <h2 id="viewProjectTitle">Project Details</h2>
-            <div id="viewProjectDetails"></div>
+        <div class="modal-content" style="background:white;border-radius:15px;max-width:1000px;width:90%;max-height:90vh;overflow-y:auto;position:relative;padding:0;">
+            <div id="viewProjectContent"></div>
         </div>
     </div>
     <script>
@@ -484,17 +482,34 @@ function openViewProjectModal(idx) {
     const recent = filtered.slice(-7).reverse();
     const p = recent[idx];
     if (!p) return;
-    document.getElementById('viewProjectTitle').textContent = p.title;
-    document.getElementById('viewProjectDetails').innerHTML = `
-        <div style="margin-bottom:1.2em;">
-            <span class="status-badge ${p.status.toLowerCase()}" style="margin-right:0.7em;">${p.status}</span>
-            <span style="font-weight:600; color:#1e88e5;">${p.category.charAt(0).toUpperCase() + p.category.slice(1)}</span>
-        </div>
-        <p><strong>Municipality:</strong> ${p.municipality}</p>
-        <p><strong>Budget:</strong> R ${p.budget.toLocaleString()}</p>
-        <p><strong>Progress:</strong> ${p.progress}%</p>
-        <p><strong>Contractor:</strong> ${p.contractor || '-'}</p>
-    `;
+    let html = `<div class='modal-header' style='position:relative;height:300px;overflow:hidden;border-radius:15px 15px 0 0;'>`;
+    html += `<img src='${p.image || "https://images.pexels.com/photos/2598683/pexels-photo-2598683.jpeg?auto=compress&cs=tinysrgb&w=800"}' alt='Project Image' class='modal-image' style='width:100%;height:100%;object-fit:cover;'>`;
+    html += `<button class='modal-close' onclick='closeViewProjectModal()' style='position:absolute;top:15px;right:15px;background:rgba(0,0,0,0.7);color:white;border:none;border-radius:50%;width:40px;height:40px;font-size:1.2rem;cursor:pointer;transition:background 0.3s ease;z-index:2;'><i class='fas fa-times'></i></button>`;
+    html += `</div>`;
+    html += `<div class='modal-body' style='padding:2rem;'>`;
+    html += `<h2 class='modal-title' style='font-family:Montserrat,sans-serif;font-size:2rem;color:#1e88e5;margin-bottom:0.5rem;'>${p.title}</h2>`;
+    html += `<p class='modal-creator' style='color:#666;font-size:1rem;margin-bottom:1.5rem;'>by ${p.contractor || "Unknown"}</p>`;
+    html += `<p class='modal-description' style='color:#555;line-height:1.8;margin-bottom:2rem;font-size:1.1rem;'>${p.description || "No description available."}</p>`;
+    html += `<div class='modal-progress' style='margin-bottom:2rem;'><h4 style='font-family:Montserrat,sans-serif;color:#333;margin-bottom:1rem;'>Progress Overview</h4><div class='modal-progress-bar' style='width:100%;height:12px;background:#e0e0e0;border-radius:6px;overflow:hidden;margin-bottom:0.5rem;'><div class='modal-progress-fill' style='height:100%;background:linear-gradient(90deg,#43a047,#66bb6a);width:${p.progress||0}%;transition:width 0.8s ease;'></div></div><p class='modal-progress-text' style='font-size:1rem;color:#666;text-align:right;font-weight:600;'>${p.progress||0}% Complete</p></div>`;
+    html += `<div class='modal-financial' style='margin-bottom:2rem;'><h4 style='font-family:Montserrat,sans-serif;color:#333;margin-bottom:1rem;'>Financial Information</h4><div class='financial-grid' style='display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;'>`;
+    html += `<div class='financial-item' style='display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;background:#f8f9fa;border-radius:8px;border:1px solid #e0e0e0;'><span class='financial-label' style='font-weight:600;color:#333;'>Project Budget:</span><span class='financial-value' style='font-weight:500;color:#43a047;white-space:nowrap;'>R ${p.budget ? p.budget.toLocaleString() : "-"}</span></div>`;
+    html += `<div class='financial-item' style='display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;background:#f8f9fa;border-radius:8px;border:1px solid #e0e0e0;'><span class='financial-label' style='font-weight:600;color:#333;'>Amount Spent:</span><span class='financial-value' style='font-weight:500;color:#43a047;white-space:nowrap;'>-</span></div>`;
+    html += `<div class='financial-item' style='display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;background:#f8f9fa;border-radius:8px;border:1px solid #e0e0e0;'><span class='financial-label' style='font-weight:600;color:#333;'>Contractor:</span><span class='financial-value' style='font-weight:500;color:#43a047;white-space:nowrap;'>${p.contractor || "-"}</span></div>`;
+    html += `</div></div>`;
+    html += `<div class='modal-milestones' style='margin-bottom:2rem;'><h4 style='font-family:Montserrat,sans-serif;color:#333;margin-bottom:1rem;'>Project Milestones</h4><div>`;
+    if (p.milestones && p.milestones.length) {
+        p.milestones.forEach((m, i) => {
+            html += `<div class='milestone${m.status === "completed" ? "" : " pending"}' style='margin-bottom:1rem;background:white;padding:1rem;border-radius:8px;position:relative;display:flex;align-items:center;'>`;
+            html += `<div style='display:flex;align-items:center;flex:1;'><div class='milestone-icon' style='margin-right:1rem;font-size:1.2rem;color:${m.status === "completed" ? "#43a047" : "#f57c00"};'>${m.status === "completed" ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-clock"></i>'}</div>`;
+            html += `<div class='milestone-content'><div class='milestone-title' style='font-weight:600;color:#333;margin-bottom:0.25rem;'>${m.title}</div><div class='milestone-date' style='color:#666;font-size:0.9rem;'><strong>Date:</strong> ${m.date}</div><div style='font-size:0.95em;'><strong>Status:</strong> <span style='color:${m.status === "completed" ? "#43a047" : "#f57c00"};font-weight:600;'>${m.status.charAt(0).toUpperCase() + m.status.slice(1)}</span></div></div></div>`;
+            html += `</div>`;
+        });
+    } else {
+        html += `<div style='color:#888;'>No milestones yet.</div>`;
+    }
+    html += `</div></div>`;
+    html += `</div>`;
+    document.getElementById('viewProjectContent').innerHTML = html;
     document.getElementById('viewProjectModal').style.display = 'flex';
 }
 function closeViewProjectModal() {
