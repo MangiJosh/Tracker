@@ -52,38 +52,41 @@
         }
         .filters {
             display: flex;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-            margin-bottom: 2rem;
+            flex-wrap: nowrap;
+            gap: 0.7rem;
+            margin-bottom: 1.1rem;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(30,136,229,0.06);
-            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(30,136,229,0.06);
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
         }
         .filters label {
             font-weight: 600;
             color: #1e88e5;
-            margin-right: 0.5rem;
+            margin-right: 0.3rem;
+            font-size: 0.85em;
         }
         .filters select, .filters input[type="date"] {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            padding: 0.3rem 0.7rem;
+            border-radius: 14px;
             border: 1px solid #b0bec5;
-            font-size: 0.95rem;
-            min-width: 160px;
+            font-size: 0.85rem;
+            min-width: 110px;
         }
         .analytics-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 0.7rem;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.4rem;
             align-items: center;
-            margin-bottom: 1.2rem;
+            margin-bottom: 0.7rem;
+            font-size: 0.85rem;
         }
         .stat-card {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            padding: 0.7rem 0.5rem 0.7rem 0.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            padding: 0.4rem 0.3rem 0.4rem 0.3rem;
             position: relative;
             overflow: hidden;
             border: 1px solid #e3eaf3;
@@ -99,21 +102,21 @@
             background: linear-gradient(90deg, #1e88e5, #43a047);
         }
         .stat-icon {
-            font-size: 1.1rem;
-            margin-bottom: 0.2rem;
+            font-size: 0.95rem;
+            margin-bottom: 0.1rem;
             color: #1e88e5;
             opacity: 0.8;
         }
         .stat-label {
             color: #666;
             font-weight: 600;
-            font-size: 0.7rem;
-            margin-bottom: 0.1rem;
+            font-size: 0.65rem;
+            margin-bottom: 0.05rem;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
         .stat-value {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             color: #1e88e5;
@@ -250,7 +253,7 @@
                     <input type="date" id="endDate">
                 </div>
             </div>
-            <div class="analytics-stats" id="analyticsStats" style="scroll-margin-top: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.7rem; align-items: center; margin-bottom: 1.2rem;">
+            <div class="analytics-stats" id="analyticsStats" style="scroll-margin-top: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.4rem; align-items: center; margin-bottom: 0.7rem; font-size: 0.85rem;">
                 <div class="stat-card"><div class="stat-icon"><i class="fas fa-folder-open"></i></div><div class="stat-label">Total Projects</div><div class="stat-value">${total}</div></div>
                 <div class="stat-card"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-label">Active</div><div class="stat-value">${active}</div></div>
                 <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-label">Completed</div><div class="stat-value">${completed}</div></div>
