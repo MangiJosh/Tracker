@@ -312,10 +312,18 @@
         </div>
     </div>
     <div class="modal" id="viewCaseModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-        <div class="modal-content" style="background:white;border-radius:15px;max-width:600px;width:95%;padding:2.5rem;position:relative;">
+        <div class="modal-content" style="background:white;border-radius:16px;max-width:500px;width:95%;padding:2rem;position:relative;box-shadow:0 8px 32px rgba(30,136,229,0.10);">
             <button class="modal-close" onclick="closeViewCaseModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
-            <h2 id="viewCaseTitle">Case Details</h2>
-            <div id="viewCaseDetails"></div>
+            <h2 id="viewCaseTitle" style="color:#1e88e5;margin-bottom:0.5rem;"></h2>
+            <div id="viewCaseMeta" style="color:#666;font-size:1em;margin-bottom:1rem;"></div>
+            <div id="viewCaseStatus" style="margin-bottom:1rem;"></div>
+            <div id="viewCaseSummary" style="margin-bottom:1rem;"></div>
+            <div id="viewCaseFull" style="margin-bottom:1.5rem;"></div>
+            <div id="viewCaseUpdates" style="background:#f8f9fa;padding:1rem;border-radius:8px;color:#1976d2;font-size:0.98em;"></div>
+            <div style="margin-top:2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">
+                <button class="donate-btn" onclick="alert('Donate functionality coming soon!')"><i class='fas fa-hand-holding-heart'></i> Donate</button>
+                <button class="download-btn" onclick="alert('Download functionality coming soon!')"><i class='fas fa-download'></i> Download Case Files</button>
+            </div>
         </div>
     </div>
     <script>
@@ -461,13 +469,18 @@ document.addEventListener('DOMContentLoaded', function() {
 function openViewCaseModal(idx) {
     const c = getFilteredCases().slice(-7).reverse()[idx];
     document.getElementById('viewCaseTitle').textContent = c.title;
-    document.getElementById('viewCaseDetails').innerHTML = `
-        <p><strong>Status:</strong> ${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</p>
-        <p><strong>Category:</strong> ${c.category}</p>
-        <p><strong>Municipality:</strong> ${c.municipality}</p>
-        <p><strong>Plaintiff:</strong> ${c.plaintiff}</p>
-        <p><strong>Date:</strong> ${c.date}</p>
-    `;
+    document.getElementById('viewCaseMeta').innerHTML = `Filed by <strong>${c.plaintiff}</strong> &middot; ${new Date(c.date).toLocaleDateString()}`;
+    document.getElementById('viewCaseStatus').innerHTML = `<strong>Status:</strong> <span class='case-status status-${c.status}'>${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span>`;
+    document.getElementById('viewCaseSummary').innerHTML = `<strong>Summary:</strong> ${c.summary || 'No summary available.'}`;
+    document.getElementById('viewCaseFull').innerHTML = `<strong>Details:</strong> ${c.details || 'No details available.'}`;
+    // Updates (demo)
+    let updates = c.updates || [];
+    if (updates.length > 0) {
+        document.getElementById('viewCaseUpdates').innerHTML = `<strong>Updates:</strong>` +
+            updates.map(u => `<div style='color:#555;margin-top:0.5rem;'><span style='color:#1976d2;font-weight:600;'>${new Date(u.date).toLocaleDateString()}</span>: ${u.message}</div>`).join('');
+    } else {
+        document.getElementById('viewCaseUpdates').innerHTML = `<strong>Updates:</strong><div style='color:#555;margin-top:0.5rem;'>No updates yet.</div>`;
+    }
     document.getElementById('viewCaseModal').style.display = 'flex';
 }
 function closeViewCaseModal() {
