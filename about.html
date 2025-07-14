@@ -76,16 +76,16 @@
           margin: 0 auto;
           display: block;
         }
-        /* Image left, text wraps around it in dashboard section */
+        /* Float image right, first paragraph left, rest below */
         .about-dashboard-flex {
           max-width: 1200px;
           margin: 0 auto;
         }
         .about-dashboard-image {
-          float: left;
+          float: right;
           width: 340px;
           max-width: 45%;
-          margin: 0 2rem 1rem 0;
+          margin: 0 0 1rem 2rem;
           border-radius: 12px;
           box-shadow: 0 4px 24px rgba(30,136,229,0.10);
           object-fit: cover;
@@ -140,9 +140,10 @@
     <section class="about-section" style="margin-top:1.5rem;">
         <div class="about-dashboard-flex">
             <h2>How the Projects & Cases Dashboard Works</h2>
+            <p style="margin-bottom:1.5rem;">The Projects and Cases dashboards are powerful tools designed to provide real-time insights into public interest projects and legal cases across South Africa. These dashboards aggregate data from multiple sources, allowing users to filter, search, and analyze information by province, municipality, category, status, and date range.</p>
             <img src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&fit=crop&w=600&q=80" class="about-dashboard-image" alt="People collaborating and tracking progress on digital dashboards" />
+            <div style="clear:both;"></div>
             <div class="about-dashboard-text">
-                <p>The Projects and Cases dashboards are powerful tools designed to provide real-time insights into public interest projects and legal cases across South Africa. These dashboards aggregate data from multiple sources, allowing users to filter, search, and analyze information by province, municipality, category, status, and date range.</p>
                 <ul style="font-size:1.1rem; color:#444; margin-bottom:1.5rem; padding-left:1.5rem;">
                     <li><strong>Projects Dashboard:</strong> Track the progress, budget, contractors, and milestones of infrastructure, education, healthcare, and climate projects nationwide. Visual charts and key stats help you quickly identify trends and top performers.</li>
                     <li><strong>Cases Dashboard:</strong> Monitor high-profile legal cases, filter by status or category, and view details about plaintiffs, outcomes, and timelines. The dashboard highlights top plaintiffs and provides analytics on case distribution and resolution.</li>
