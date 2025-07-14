@@ -176,93 +176,107 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="global-analytics-container">
-        <div class="header">
-            <h1><i class="fas fa-globe-africa"></i> Global Analytics</h1>
-            <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-        </div>
-        <div class="filters">
-            <div><label for="province">Province:</label>
-                <select id="province">
-                    <option value="">All Provinces</option>
-                    <option value="gauteng">Gauteng</option>
-                    <option value="western cape">Western Cape</option>
-                    <option value="kwazulu-natal">KwaZulu-Natal</option>
-                    <option value="eastern cape">Eastern Cape</option>
-                    <option value="limpopo">Limpopo</option>
-                    <option value="free state">Free State</option>
-                    <option value="mpumalanga">Mpumalanga</option>
-                    <option value="north west">North West</option>
-                    <option value="northern cape">Northern Cape</option>
-                </select>
+    <div style="display: flex; min-height: 100vh;">
+        <aside class="sidebar" style="width: 260px; background: linear-gradient(180deg, #1e88e5 0%, #1565c0 100%); color: white; display: flex; flex-direction: column; padding: 2rem 1.5rem 1rem 1.5rem; position: fixed; height: 100vh; z-index: 100; box-shadow: 4px 0 20px rgba(0,0,0,0.1);">
+            <a href="dashboard.html" class="logo" style="font-family: 'Montserrat', sans-serif; font-size: 1.3rem; font-weight: 700; color: white; text-decoration: none; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-globe-africa"></i> Global Analytics</a>
+            <ul class="sidebar-menu" style="list-style: none; padding: 0; margin: 0; flex: 1;">
+                <li><a href="#keyStats" class="sidebar-link" style="color: white; text-decoration: none; font-size: 1rem; font-weight: 500; display: block; padding: 0.8rem 0; border-radius: 8px;">Key Stats</a></li>
+                <li><a href="#projectsByProvince" class="sidebar-link" style="color: white; text-decoration: none; font-size: 1rem; font-weight: 500; display: block; padding: 0.8rem 0; border-radius: 8px;">Projects by Province</a></li>
+                <li><a href="#budgetByCategory" class="sidebar-link" style="color: white; text-decoration: none; font-size: 1rem; font-weight: 500; display: block; padding: 0.8rem 0; border-radius: 8px;">Budget by Category</a></li>
+                <li><a href="#projectsOverTime" class="sidebar-link" style="color: white; text-decoration: none; font-size: 1rem; font-weight: 500; display: block; padding: 0.8rem 0; border-radius: 8px;">Projects Over Time</a></li>
+                <li><a href="#topContractors" class="sidebar-link" style="color: white; text-decoration: none; font-size: 1rem; font-weight: 500; display: block; padding: 0.8rem 0; border-radius: 8px;">Top Contractors</a></li>
+                <li><a href="#projectsByStatus" class="sidebar-link" style="color: white; text-decoration: none; font-size: 1rem; font-weight: 500; display: block; padding: 0.8rem 0; border-radius: 8px;">Projects by Status</a></li>
+                <li><a href="#recentProjects" class="sidebar-link" style="color: white; text-decoration: none; font-size: 1rem; font-weight: 500; display: block; padding: 0.8rem 0; border-radius: 8px;">Recent Projects</a></li>
+            </ul>
+        </aside>
+        <div class="global-analytics-container" style="margin-left: 260px; width: 100%;">
+            <div class="header">
+                <h1><i class="fas fa-globe-africa"></i> Global Analytics</h1>
+                <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
             </div>
-            <div><label for="municipality">Municipality:</label>
-                <select id="municipality">
-                    <option value="">All Municipalities</option>
-                    <option value="johannesburg">Johannesburg</option>
-                    <option value="cape town">Cape Town</option>
-                    <option value="ethekwini">eThekwini</option>
-                    <option value="nelspruit">Nelspruit</option>
-                    <option value="polokwane">Polokwane</option>
-                    <option value="bloemfontein">Bloemfontein</option>
-                    <option value="kimberley">Kimberley</option>
-                    <option value="mafikeng">Mafikeng</option>
-                    <option value="port elizabeth">Port Elizabeth</option>
-                </select>
+            <div class="filters">
+                <div><label for="province">Province:</label>
+                    <select id="province">
+                        <option value="">All Provinces</option>
+                        <option value="gauteng">Gauteng</option>
+                        <option value="western cape">Western Cape</option>
+                        <option value="kwazulu-natal">KwaZulu-Natal</option>
+                        <option value="eastern cape">Eastern Cape</option>
+                        <option value="limpopo">Limpopo</option>
+                        <option value="free state">Free State</option>
+                        <option value="mpumalanga">Mpumalanga</option>
+                        <option value="north west">North West</option>
+                        <option value="northern cape">Northern Cape</option>
+                    </select>
+                </div>
+                <div><label for="municipality">Municipality:</label>
+                    <select id="municipality">
+                        <option value="">All Municipalities</option>
+                        <option value="johannesburg">Johannesburg</option>
+                        <option value="cape town">Cape Town</option>
+                        <option value="ethekwini">eThekwini</option>
+                        <option value="nelspruit">Nelspruit</option>
+                        <option value="polokwane">Polokwane</option>
+                        <option value="bloemfontein">Bloemfontein</option>
+                        <option value="kimberley">Kimberley</option>
+                        <option value="mafikeng">Mafikeng</option>
+                        <option value="port elizabeth">Port Elizabeth</option>
+                    </select>
+                </div>
+                <div><label for="category">Category:</label>
+                    <select id="category">
+                        <option value="">All Categories</option>
+                        <option value="infrastructure">Infrastructure</option>
+                        <option value="transport">Transport</option>
+                        <option value="education">Education</option>
+                        <option value="housing">Housing</option>
+                        <option value="climate">Climate</option>
+                        <option value="healthcare">Healthcare</option>
+                    </select>
+                </div>
+                <div><label for="status">Status:</label>
+                    <select id="status">
+                        <option value="">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Delayed">Delayed</option>
+                        <option value="Planning">Planning</option>
+                    </select>
+                </div>
+                <div><label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div><label for="endDate">End Date:</label>
+                    <input type="date" id="endDate">
+                </div>
             </div>
-            <div><label for="category">Category:</label>
-                <select id="category">
-                    <option value="">All Categories</option>
-                    <option value="infrastructure">Infrastructure</option>
-                    <option value="transport">Transport</option>
-                    <option value="education">Education</option>
-                    <option value="housing">Housing</option>
-                    <option value="climate">Climate</option>
-                    <option value="healthcare">Healthcare</option>
-                </select>
+            <div class="analytics-stats" id="analyticsStats" style="scroll-margin-top: 80px;"  tabindex="-1"></div>
+            <div class="charts-section">
+                <div class="chart-card" id="projectsByProvince" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="projectsByProvinceChart" width="400" height="320"></canvas></div>
+                <div class="chart-card" id="budgetByCategory" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="budgetByCategoryChart" width="400" height="320"></canvas></div>
+                <div class="chart-card" id="projectsOverTime" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="projectsOverTimeChart" width="400" height="320"></canvas></div>
             </div>
-            <div><label for="status">Status:</label>
-                <select id="status">
-                    <option value="">All Statuses</option>
-                    <option value="Active">Active</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Delayed">Delayed</option>
-                    <option value="Planning">Planning</option>
-                </select>
+            <div class="charts-section">
+                <div class="chart-card" id="topContractors" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="topContractorsChart" width="400" height="320"></canvas></div>
+                <div class="chart-card" id="projectsByStatus" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="projectsByStatusChart" width="400" height="320"></canvas></div>
             </div>
-            <div><label for="startDate">Start Date:</label>
-                <input type="date" id="startDate">
+            <div class="recent-projects" id="recentProjects" style="scroll-margin-top: 80px;" tabindex="-1">
+                <h2><i class="fas fa-list"></i> Recent Projects</h2>
+                <table class="recent-table" id="recentProjectsTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Category</th>
+                            <th>Province</th>
+                            <th>Municipality</th>
+                            <th>Budget</th>
+                            <th>Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
-            <div><label for="endDate">End Date:</label>
-                <input type="date" id="endDate">
-            </div>
-        </div>
-        <div class="analytics-stats" id="analyticsStats"></div>
-        <div class="charts-section">
-            <div class="chart-card"><canvas id="projectsByProvinceChart" width="400" height="320"></canvas></div>
-            <div class="chart-card"><canvas id="budgetByCategoryChart" width="400" height="320"></canvas></div>
-            <div class="chart-card"><canvas id="projectsOverTimeChart" width="400" height="320"></canvas></div>
-        </div>
-        <div class="charts-section">
-            <div class="chart-card"><canvas id="topContractorsChart" width="400" height="320"></canvas></div>
-            <div class="chart-card"><canvas id="projectsByStatusChart" width="400" height="320"></canvas></div>
-        </div>
-        <div class="recent-projects">
-            <h2><i class="fas fa-list"></i> Recent Projects</h2>
-            <table class="recent-table" id="recentProjectsTable">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Category</th>
-                        <th>Province</th>
-                        <th>Municipality</th>
-                        <th>Budget</th>
-                        <th>Progress</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
         </div>
     </div>
     <script>
@@ -400,6 +414,18 @@ function renderAll() {
     document.getElementById(id).addEventListener('change', renderAll);
 });
 window.onload = renderAll;
+
+// Smooth scroll for sidebar links
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    target.focus({ preventScroll: true });
+                }
+            });
+        });
     </script>
 </body>
 </html> 
