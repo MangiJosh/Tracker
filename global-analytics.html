@@ -300,15 +300,22 @@
                             <th>Title</th>
                             <th>Status</th>
                             <th>Category</th>
-                            <th>Province</th>
                             <th>Municipality</th>
                             <th>Budget</th>
                             <th>Progress</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    <div class="modal" id="viewProjectModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:15px;max-width:600px;width:95%;padding:2.5rem;position:relative;">
+            <button class="modal-close" onclick="closeViewProjectModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="viewProjectTitle">Project Details</h2>
+            <div id="viewProjectDetails"></div>
         </div>
     </div>
     <script>
@@ -420,14 +427,14 @@ function renderRecentProjects() {
     const filtered = getFilteredProjects();
     const recent = filtered.slice(-7).reverse();
     const tbody = document.querySelector('#recentProjectsTable tbody');
-    tbody.innerHTML = recent.map(p=>`<tr>
+    tbody.innerHTML = recent.map((p, i)=>`<tr>
         <td>${p.title}</td>
         <td><span class="status-badge ${p.status.toLowerCase()}">${p.status}</span></td>
         <td>${p.category}</td>
-        <td>${p.province}</td>
         <td>${p.municipality}</td>
         <td>R ${p.budget.toLocaleString()}</td>
         <td>${p.progress}%</td>
+        <td><button class="action-btn" title="View" onclick="openViewProjectModal(${i})"><i class="fas fa-eye"></i> View Project</button></td>
     </tr>`).join('');
 }
 

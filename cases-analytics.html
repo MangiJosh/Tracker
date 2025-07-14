@@ -281,15 +281,22 @@
                             <th>Title</th>
                             <th>Status</th>
                             <th>Category</th>
-                            <th>Province</th>
                             <th>Municipality</th>
                             <th>Plaintiff</th>
                             <th>Date</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    <div class="modal" id="viewCaseModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content" style="background:white;border-radius:15px;max-width:600px;width:95%;padding:2.5rem;position:relative;">
+            <button class="modal-close" onclick="closeViewCaseModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="viewCaseTitle">Case Details</h2>
+            <div id="viewCaseDetails"></div>
         </div>
     </div>
     <script>
@@ -396,14 +403,14 @@ function renderRecentCases() {
     const filtered = getFilteredCases();
     const recent = filtered.slice(-7).reverse();
     const tbody = document.querySelector('#recentCasesTable tbody');
-    tbody.innerHTML = recent.map(c=>`<tr>
+    tbody.innerHTML = recent.map((c, i)=>`<tr>
         <td>${c.title}</td>
         <td><span class="status-badge ${c.status}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span></td>
         <td>${c.category}</td>
-        <td>${c.province}</td>
         <td>${c.municipality}</td>
         <td>${c.plaintiff}</td>
         <td>${c.date}</td>
+        <td><button class="action-btn" title="View" onclick="openViewCaseModal(${i})"><i class="fas fa-eye"></i> View Case</button></td>
     </tr>`).join('');
 }
 
@@ -430,6 +437,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+    </script>
+    <script>
+function openViewCaseModal(idx) {
+    const c = getFilteredCases().slice(-7).reverse()[idx];
+    document.getElementById('viewCaseTitle').textContent = c.title;
+    document.getElementById('viewCaseDetails').innerHTML = `
+        <p><strong>Status:</strong> ${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</p>
+        <p><strong>Category:</strong> ${c.category}</p>
+        <p><strong>Municipality:</strong> ${c.municipality}</p>
+        <p><strong>Plaintiff:</strong> ${c.plaintiff}</p>
+        <p><strong>Date:</strong> ${c.date}</p>
+    `;
+    document.getElementById('viewCaseModal').style.display = 'flex';
+}
+function closeViewCaseModal() {
+    document.getElementById('viewCaseModal').style.display = 'none';
+}
     </script>
 </body>
 </html> 
