@@ -790,12 +790,12 @@
         <aside class="sidebar">
             <a href="#" class="logo"><i class="fas fa-chart-line"></i> ProgressWatch</a>
             <ul class="sidebar-menu">
-                <li><a href="#" class="active" onclick="showSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#" onclick="showSection('projects')"><i class="fas fa-folder-open"></i> Projects</a></li>
+                <li><a href="#" class="active" onclick="showSection('dashboard', event)"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#" onclick="showSection('projects', event)"><i class="fas fa-folder-open"></i> Projects</a></li>
                 <!--<li><a href="#" onclick="openAddProjectModal();return false;"><i class="fas fa-plus-circle"></i> Add Project</a></li>-->
-                <li><a href="#" onclick="showSection('contractors')"><i class="fas fa-users"></i> Contractors</a></li>
-                <li><a href="#" onclick="showSection('cases')"><i class="fas fa-balance-scale"></i> Cases</a></li>
-                <li><a href="#" onclick="showSection('analytics')"><i class="fas fa-chart-pie"></i> Analytics</a></li>
+                <li><a href="#" onclick="showSection('contractors', event)"><i class="fas fa-users"></i> Contractors</a></li>
+                <li><a href="#" onclick="showSection('cases', event)"><i class="fas fa-balance-scale"></i> Cases</a></li>
+                <li><a href="#" onclick="showSection('analytics', event)"><i class="fas fa-chart-pie"></i> Analytics</a></li>
             </ul>
             <div class="sidebar-footer">
                 &copy; 2024 ProgressWatch<br>Admin Dashboard Demo
@@ -1744,7 +1744,7 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).replace(/-/g, ' ');
 }
 // --- Section Navigation ---
-function showSection(sectionName) {
+function showSection(sectionName, event) {
     // Hide all sections
     document.getElementById('dashboardSection').style.display = 'none';
     document.getElementById('projectsSection').style.display = 'none';
@@ -1756,11 +1756,12 @@ function showSection(sectionName) {
     document.getElementById(sectionName + 'Section').style.display = 'block';
     
     // Update active menu item
-    document.querySelectorAll('.sidebar-menu a').forEach(link => {
-        link.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
+    if (event) {
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
     // Render content for the selected section
     switch(sectionName) {
         case 'dashboard':
@@ -2040,10 +2041,14 @@ function deleteCase(id) {
 
 // Add analytics rendering logic after the filters and section
 function getFilteredProjects() {
-    const startDate = document.getElementById('analyticsStartDate').value;
-    const endDate = document.getElementById('analyticsEndDate').value;
-    const province = document.getElementById('analyticsProvince').value.toLowerCase();
-    const municipality = document.getElementById('analyticsMunicipality').value.toLowerCase();
+    const startDateEl = document.getElementById('analyticsStartDate');
+    const endDateEl = document.getElementById('analyticsEndDate');
+    const provinceEl = document.getElementById('analyticsProvince');
+    const municipalityEl = document.getElementById('analyticsMunicipality');
+    const startDate = startDateEl ? startDateEl.value : '';
+    const endDate = endDateEl ? endDateEl.value : '';
+    const province = provinceEl ? provinceEl.value.toLowerCase() : '';
+    const municipality = municipalityEl ? municipalityEl.value.toLowerCase() : '';
     // For demo, we don't have municipality in project data, so just filter by province and date
     return projects.filter(p => {
         let pass = true;
