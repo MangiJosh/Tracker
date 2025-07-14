@@ -876,72 +876,15 @@
             </div>
             <div class="dashboard-section" id="analyticsSection" style="display: none;">
                 <h2><i class="fas fa-chart-pie"></i> Analytics</h2>
-                <div id="analyticsFilters" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:2rem;">
-                    <div>
-                        <label for="analyticsStartDate" style="font-weight:600;color:#1976d2;">Start Date</label><br>
-                        <input type="date" id="analyticsStartDate" style="padding:0.5rem;border-radius:8px;border:1px solid #b0bec5;">
+                <div id="statsCharts" style="min-height:200px;color:#888;">
+                    <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
+                        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
+                            <canvas id="projectsPieChart" width="350" height="300"></canvas>
+                        </div>
+                        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:500px;width:100%;margin-bottom:2rem;">
+                            <canvas id="budgetBarChart" width="450" height="300"></canvas>
+                        </div>
                     </div>
-                    <div>
-                        <label for="analyticsEndDate" style="font-weight:600;color:#1976d2;">End Date</label><br>
-                        <input type="date" id="analyticsEndDate" style="padding:0.5rem;border-radius:8px;border:1px solid #b0bec5;">
-                    </div>
-                    <div>
-                        <label for="analyticsProvince" style="font-weight:600;color:#1976d2;">Province</label><br>
-                        <select id="analyticsProvince" style="padding:0.5rem;border-radius:8px;border:1px solid #b0bec5;">
-                            <option value="">All Provinces</option>
-                            <option value="gauteng">Gauteng</option>
-                            <option value="western cape">Western Cape</option>
-                            <option value="kwazulu-natal">KwaZulu-Natal</option>
-                            <option value="eastern cape">Eastern Cape</option>
-                            <option value="limpopo">Limpopo</option>
-                            <option value="free state">Free State</option>
-                            <option value="mpumalanga">Mpumalanga</option>
-                            <option value="north west">North West</option>
-                            <option value="northern cape">Northern Cape</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="analyticsMunicipality" style="font-weight:600;color:#1976d2;">Municipality</label><br>
-                        <select id="analyticsMunicipality" style="padding:0.5rem;border-radius:8px;border:1px solid #b0bec5;">
-                            <option value="">All Municipalities</option>
-                            <option value="city of johannesburg">City of Johannesburg</option>
-                            <option value="city of tshwane">City of Tshwane</option>
-                            <option value="ethekwini">eThekwini</option>
-                            <option value="cape town">Cape Town</option>
-                            <option value="nelspruit">Nelspruit</option>
-                            <option value="polokwane">Polokwane</option>
-                            <option value="kimberley">Kimberley</option>
-                            <option value="bloemfontein">Bloemfontein</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="analyticsCards" style="display:flex;flex-wrap:wrap;gap:2rem;margin-bottom:2rem;"></div>
-                <div style="display:flex;flex-wrap:wrap;gap:2rem;align-items:flex-start;">
-                    <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
-                        <canvas id="projectsOverTimeChart" width="350" height="300"></canvas>
-                    </div>
-                    <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
-                        <canvas id="projectsByCategoryChart" width="350" height="300"></canvas>
-                    </div>
-                    <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
-                        <canvas id="topContractorsChart" width="350" height="300"></canvas>
-                    </div>
-                </div>
-                <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:1000px;width:100%;margin-bottom:2rem;">
-                    <h3 style="color:#1976d2;margin-bottom:1rem;">Recent Projects</h3>
-                    <table class="project-table" id="analyticsRecentProjectsTable">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Status</th>
-                                <th>Category</th>
-                                <th>Province</th>
-                                <th>Budget</th>
-                                <th>Progress</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
                 </div>
             </div>
             <div class="dashboard-section" id="casesSection" style="display: none;">
