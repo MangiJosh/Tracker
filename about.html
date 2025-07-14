@@ -28,16 +28,19 @@
         .about-hero { background: linear-gradient(135deg, #1e88e5, #1976d2); color: white; text-align: center; padding: 7rem 2rem 4rem; margin-top: 80px; }
         .about-hero h1 { font-family: 'Montserrat', sans-serif; font-size: 2.8rem; font-weight: 700; margin-bottom: 1rem; }
         .about-hero p { font-size: 1.3rem; max-width: 700px; margin: 0 auto; opacity: 0.95; }
-        .about-section { background: white; max-width: 900px; margin: 2rem auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(30,136,229,0.08); padding: 2.5rem 2rem; }
+        .about-section {
+            background: white;
+            width: 95vw;
+            max-width: none;
+            margin: 2rem auto;
+            border-radius: 6px;
+            box-shadow: none;
+            padding: 2.5rem 2rem;
+        }
         .about-section h2 { font-family: 'Montserrat', sans-serif; color: #1e88e5; font-size: 2rem; margin-bottom: 1rem; }
         .about-section p { font-size: 1.1rem; color: #444; margin-bottom: 1.5rem; }
-        .team-section { background: #f5f5f5; max-width: 900px; margin: 2rem auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(30,136,229,0.06); padding: 2.5rem 2rem; }
-        .team-section h2 { font-family: 'Montserrat', sans-serif; color: #1e88e5; font-size: 2rem; margin-bottom: 1.5rem; text-align: center; }
-        .team-list { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
-        .team-member { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(30,136,229,0.07); padding: 1.5rem 1rem; text-align: center; width: 220px; }
-        .team-member i { font-size: 2.5rem; color: #1976d2; margin-bottom: 0.5rem; }
-        .team-member h3 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #1976d2; margin-bottom: 0.3rem; }
-        .team-member p { font-size: 0.98rem; color: #555; }
+        /* Remove team-section styles */
+        .team-section, .team-section *, .team-list, .team-member { display: none !important; }
         .footer { background: #333; color: white; padding: 3rem 2rem 1rem; text-align: left; margin-top: 3rem; }
         .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-bottom: 2rem; text-align: left; }
         @media (max-width: 900px) { .footer-content { grid-template-columns: 1fr 1fr; } }
@@ -82,31 +85,21 @@
         <strong>Accountability:</strong> We hold public officials and projects to high standards.<br>
         <strong>Community:</strong> We empower citizens to engage and make a difference.</p>
     </section>
-    <!-- Team Section -->
-    <section class="team-section">
-        <h2>Meet the Team</h2>
-        <div class="team-list">
-            <div class="team-member">
-                <i class="fas fa-user-tie"></i>
-                <h3>Alex M.</h3>
-                <p>Founder & Lead Developer</p>
-            </div>
-            <div class="team-member">
-                <i class="fas fa-user-graduate"></i>
-                <h3>Jamie L.</h3>
-                <p>Data Analyst</p>
-            </div>
-            <div class="team-member">
-                <i class="fas fa-user-nurse"></i>
-                <h3>Sam R.</h3>
-                <p>Community Manager</p>
-            </div>
-            <div class="team-member">
-                <i class="fas fa-user-cog"></i>
-                <h3>Taylor S.</h3>
-                <p>Product Designer</p>
-            </div>
-        </div>
+    <!-- Projects & Cases Dashboard Section -->
+    <section class="about-section" style="margin-top:1.5rem;">
+        <h2>How the Projects & Cases Dashboard Works</h2>
+        <p>The Projects and Cases dashboards are powerful tools designed to provide real-time insights into public interest projects and legal cases across South Africa. These dashboards aggregate data from multiple sources, allowing users to filter, search, and analyze information by province, municipality, category, status, and date range.</p>
+        <ul style="font-size:1.1rem; color:#444; margin-bottom:1.5rem; padding-left:1.5rem;">
+            <li><strong>Projects Dashboard:</strong> Track the progress, budget, contractors, and milestones of infrastructure, education, healthcare, and climate projects nationwide. Visual charts and key stats help you quickly identify trends and top performers.</li>
+            <li><strong>Cases Dashboard:</strong> Monitor high-profile legal cases, filter by status or category, and view details about plaintiffs, outcomes, and timelines. The dashboard highlights top plaintiffs and provides analytics on case distribution and resolution.</li>
+        </ul>
+        <h3 style="color:#1e88e5; margin-bottom:0.7rem;">Benefits</h3>
+        <ul style="font-size:1.1rem; color:#444; padding-left:1.5rem;">
+            <li>Promotes transparency and accountability in public service delivery.</li>
+            <li>Empowers citizens, journalists, and officials with actionable data.</li>
+            <li>Enables early detection of delays, budget overruns, or legal bottlenecks.</li>
+            <li>Fosters community engagement and informed decision-making.</li>
+        </ul>
     </section>
     <!-- Footer -->
     <footer class="footer">
