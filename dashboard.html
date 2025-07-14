@@ -899,6 +899,7 @@
                             <th>Title</th>
                             <th>Status</th>
                             <th>Category</th>
+                            <th>Plaintiff</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -1129,6 +1130,10 @@
                     <div>
                         <label>Category</label>
                         <input type="text" id="caseCategory" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                    </div>
+                    <div>
+                        <label>Plaintiff</label>
+                        <input type="text" id="casePlaintiff" style="width:100%;padding:0.7rem;margin-top:0.3rem;">
                     </div>
                 </div>
                 <button type="submit" class="add-btn" style="margin-top:1rem;"><i class="fas fa-save"></i> Save Case</button>
@@ -1711,11 +1716,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const title = document.getElementById('caseTitle').value;
       const status = document.getElementById('caseStatus').value;
       const category = document.getElementById('caseCategory').value;
+      const plaintiff = document.getElementById('casePlaintiff') ? document.getElementById('casePlaintiff').value : '';
       if (editingCaseId) {
         const c = cases.find(c => c.id === editingCaseId);
-        c.title = title; c.status = status; c.category = category;
+        c.title = title; c.status = status; c.category = category; c.plaintiff = plaintiff;
       } else {
-        cases.push({ id: nextCaseId++, title, status, category });
+        cases.push({ id: nextCaseId++, title, status, category, plaintiff });
       }
       closeCaseModal();
       renderCases();
@@ -1855,26 +1861,49 @@ let cases = [
   {
     id: 1,
     title: "Electoral Reform Challenge",
+    plaintiff: "Democratic Action Party",
+    summary: "A case challenging the constitutionality of recent changes to the national electoral law, arguing it undermines fair representation.",
     status: "open",
-    category: "Elections"
+    date: "2024-06-01",
+    details: "The Democratic Action Party filed this case in the Constitutional Court, seeking to overturn amendments to the electoral law passed in May 2024. The party claims the changes disproportionately affect smaller parties and violate the principle of proportional representation. The case has attracted significant media attention and public debate.",
+    updates: [
+      { date: "2024-06-05", message: "Court hearing scheduled for June 20, 2024." },
+      { date: "2024-06-10", message: "Additional evidence submitted by plaintiff." }
+    ]
   },
   {
     id: 2,
     title: "Public Procurement Transparency",
+    plaintiff: "Civic Watch NGO",
+    summary: "A lawsuit demanding greater transparency in government procurement processes, following reports of irregularities in major contracts.",
     status: "pending",
-    category: "Transparency"
+    date: "2024-05-18",
+    details: "Civic Watch NGO is calling for the release of all procurement documents related to the 2023-2024 infrastructure projects. The case aims to set a precedent for open access to public contract information. The government has requested an extension to respond to the suit.",
+    updates: [
+      { date: "2024-05-22", message: "Government requested extension to respond to the suit." }
+    ]
   },
   {
     id: 3,
     title: "Environmental Protection Mandate",
+    plaintiff: "Green Future Coalition",
+    summary: "A case filed to enforce stricter environmental regulations on industrial polluters in the River Valley region.",
     status: "closed",
-    category: "Environment"
+    date: "2024-04-10",
+    details: "The Green Future Coalition successfully argued that several factories were exceeding legal pollution limits. The court ordered immediate remediation and imposed fines. This case is seen as a landmark victory for environmental advocacy groups.",
+    updates: []
   },
   {
     id: 4,
     title: "Education Funding Equity",
+    plaintiff: "Parents for Equal Schools",
+    summary: "A class action suit demanding equitable funding for rural and urban public schools.",
     status: "open",
-    category: "Education"
+    date: "2024-06-10",
+    details: "Parents for Equal Schools allege that current funding formulas disadvantage rural schools, leading to disparities in resources and outcomes. The case seeks a court order to revise the funding model and ensure fair distribution of education funds.",
+    updates: [
+      { date: "2024-06-12", message: "Case filed in High Court." }
+    ]
   }
 ];
 let nextCaseId = 5;
@@ -1888,7 +1917,8 @@ function renderCases() {
     tr.innerHTML = `
       <td>${c.title}</td>
       <td><span class="status-badge ${c.status}">${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span></td>
-      <td>${c.category}</td>
+      <td>${c.category || ''}</td>
+      <td>${c.plaintiff || ''}</td>
       <td>
         <button class="action-btn" title="Edit" onclick="editCase(${c.id})"><i class="fas fa-edit"></i></button>
         <button class="action-btn" title="Delete" onclick="deleteCase(${c.id})"><i class="fas fa-trash"></i></button>
@@ -1903,6 +1933,7 @@ function openAddCaseModal() {
   document.getElementById('caseTitle').value = '';
   document.getElementById('caseStatus').value = 'open';
   document.getElementById('caseCategory').value = '';
+  document.getElementById('casePlaintiff').value = '';
   document.getElementById('caseModal').style.display = 'flex';
 }
 function closeCaseModal() {
@@ -1915,6 +1946,7 @@ function editCase(id) {
   document.getElementById('caseTitle').value = c.title;
   document.getElementById('caseStatus').value = c.status;
   document.getElementById('caseCategory').value = c.category;
+  document.getElementById('casePlaintiff').value = c.plaintiff;
   document.getElementById('caseModal').style.display = 'flex';
 }
 function deleteCase(id) {
