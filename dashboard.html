@@ -786,7 +786,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="dashboard-container" style="padding-top:0;">
+    <div class="dashboard-container" style="display:flex;">
         <aside class="sidebar">
             <a href="#" class="logo"><i class="fas fa-chart-line"></i> ProgressWatch</a>
             <ul class="sidebar-menu">
@@ -801,119 +801,121 @@
                 &copy; 2024 ProgressWatch<br>Admin Dashboard Demo
             </div>
         </aside>
-        <!-- Dashboard Header (above main content only) -->
-        <header class="dashboard-header" style="width:100%;padding:2rem 2rem 0 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.95);box-sizing:border-box;box-shadow:0 2px 8px rgba(30,136,229,0.05);">
-            <div style="display:flex;flex-direction:column;gap:0.2rem;">
-                <div style="font-size:1.3rem;font-family:'Montserrat',sans-serif;font-weight:700;color:#1e88e5;">Welcome back, <span id="dashboardUserName">User Name</span></div>
-                <div style="font-size:1rem;color:#888;">Organization: <span id="dashboardOrgName">Your Organization</span></div>
-            </div>
-            <button id="dashboardLogoutBtn" style="background:linear-gradient(135deg,#e53935,#d32f2f);color:white;border:none;border-radius:8px;padding:0.7rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(229,57,53,0.08);transition:background 0.2s;">Logout <i class="fas fa-sign-out-alt"></i></button>
-        </header>
-        <main class="main-content" style="margin-top:1.5rem;">
-            <div class="dashboard-section" id="dashboardSection">
-                <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
-                <div class="dashboard-stats" id="dashboardStats"></div>
-            </div>
-            <div class="dashboard-section" id="projectsSection" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-folder-open"></i> Projects</h2>
-                    <button class="add-btn" onclick="openAddProjectModal()"><i class="fas fa-plus"></i> Add Project</button>
+        <div class="content-column" style="flex:1;display:flex;flex-direction:column;min-width:0;">
+            <!-- Dashboard Header (above main content only) -->
+            <header class="dashboard-header" style="width:100%;padding:2rem 2rem 0 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.95);box-sizing:border-box;">
+                <div style="display:flex;flex-direction:column;gap:0.2rem;">
+                    <div style="font-size:1.3rem;font-family:'Montserrat',sans-serif;font-weight:700;color:#1e88e5;">Welcome back, <span id="dashboardUserName">User Name</span></div>
+                    <div style="font-size:1rem;color:#888;">Organization: <span id="dashboardOrgName">Your Organization</span></div>
                 </div>
-                <!-- Filter Bar -->
-                <div id="projectFilterBar" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.2rem;">
-                    <input id="projectSearchInput" type="text" placeholder="Search projects..." style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem; min-width: 180px;">
-                    <select id="filterStatus" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
-                        <option value="">All Statuses</option>
-                        <option value="Active">Active</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Delayed">Delayed</option>
-                        <option value="Planning">Planning</option>
-                    </select>
-                    <select id="filterCategory" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
-                        <option value="">All Categories</option>
-                        <option value="infrastructure">Infrastructure</option>
-                        <option value="transport">Transport</option>
-                        <option value="education">Education</option>
-                        <option value="housing">Housing</option>
-                        <option value="climate">Climate</option>
-                        <option value="healthcare">Healthcare</option>
-                    </select>
-                    <select id="filterProvince" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
-                        <option value="">All Provinces</option>
-                        <option value="gauteng">Gauteng</option>
-                        <option value="western cape">Western Cape</option>
-                        <option value="kwazulu-natal">KwaZulu-Natal</option>
-                        <option value="eastern cape">Eastern Cape</option>
-                        <option value="limpopo">Limpopo</option>
-                        <option value="free state">Free State</option>
-                        <option value="mpumalanga">Mpumalanga</option>
-                        <option value="north west">North West</option>
-                        <option value="northern cape">Northern Cape</option>
-                    </select>
+                <button id="dashboardLogoutBtn" style="background:linear-gradient(135deg,#e53935,#d32f2f);color:white;border:none;border-radius:8px;padding:0.7rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(229,57,53,0.08);transition:background 0.2s;">Logout <i class="fas fa-sign-out-alt"></i></button>
+            </header>
+            <main class="main-content" style="margin-top:1.5rem;">
+                <div class="dashboard-section" id="dashboardSection">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                    <div class="dashboard-stats" id="dashboardStats"></div>
                 </div>
-                <table class="project-table" id="projectTable">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Status</th>
-                            <th>Category</th>
-                            <th>Province</th>
-                            <th>Budget</th>
-                            <th>Progress</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="dashboard-section" id="contractorsSection" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-users"></i> Contractors</h2>
-                    <button class="add-btn" onclick="openAddContractorModal()"><i class="fas fa-plus"></i> Add Contractor</button>
+                <div class="dashboard-section" id="projectsSection" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-folder-open"></i> Projects</h2>
+                        <button class="add-btn" onclick="openAddProjectModal()"><i class="fas fa-plus"></i> Add Project</button>
+                    </div>
+                    <!-- Filter Bar -->
+                    <div id="projectFilterBar" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.2rem;">
+                        <input id="projectSearchInput" type="text" placeholder="Search projects..." style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem; min-width: 180px;">
+                        <select id="filterStatus" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
+                            <option value="">All Statuses</option>
+                            <option value="Active">Active</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Delayed">Delayed</option>
+                            <option value="Planning">Planning</option>
+                        </select>
+                        <select id="filterCategory" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
+                            <option value="">All Categories</option>
+                            <option value="infrastructure">Infrastructure</option>
+                            <option value="transport">Transport</option>
+                            <option value="education">Education</option>
+                            <option value="housing">Housing</option>
+                            <option value="climate">Climate</option>
+                            <option value="healthcare">Healthcare</option>
+                        </select>
+                        <select id="filterProvince" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #b0bec5; font-size: 0.9rem;">
+                            <option value="">All Provinces</option>
+                            <option value="gauteng">Gauteng</option>
+                            <option value="western cape">Western Cape</option>
+                            <option value="kwazulu-natal">KwaZulu-Natal</option>
+                            <option value="eastern cape">Eastern Cape</option>
+                            <option value="limpopo">Limpopo</option>
+                            <option value="free state">Free State</option>
+                            <option value="mpumalanga">Mpumalanga</option>
+                            <option value="north west">North West</option>
+                            <option value="northern cape">Northern Cape</option>
+                        </select>
+                    </div>
+                    <table class="project-table" id="projectTable">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Category</th>
+                                <th>Province</th>
+                                <th>Budget</th>
+                                <th>Progress</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
-                <table class="project-table" id="contractorsTable">
-                    <thead>
-                        <tr>
-                            <th>Contractor Name</th>
-                            <th>Number of Projects</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="dashboard-section" id="analyticsSection" style="display: none;">
-                <h2><i class="fas fa-chart-pie"></i> Analytics</h2>
-                <div id="statsCharts" style="min-height:200px;color:#888;">
-                    <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
-                        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
-                            <canvas id="projectsPieChart" width="350" height="300"></canvas>
-                        </div>
-                        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:500px;width:100%;margin-bottom:2rem;">
-                            <canvas id="budgetBarChart" width="450" height="300"></canvas>
+                <div class="dashboard-section" id="contractorsSection" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-users"></i> Contractors</h2>
+                        <button class="add-btn" onclick="openAddContractorModal()"><i class="fas fa-plus"></i> Add Contractor</button>
+                    </div>
+                    <table class="project-table" id="contractorsTable">
+                        <thead>
+                            <tr>
+                                <th>Contractor Name</th>
+                                <th>Number of Projects</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="dashboard-section" id="analyticsSection" style="display: none;">
+                    <h2><i class="fas fa-chart-pie"></i> Analytics</h2>
+                    <div id="statsCharts" style="min-height:200px;color:#888;">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
+                            <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
+                                <canvas id="projectsPieChart" width="350" height="300"></canvas>
+                            </div>
+                            <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:500px;width:100%;margin-bottom:2rem;">
+                                <canvas id="budgetBarChart" width="450" height="300"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="dashboard-section" id="casesSection" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-balance-scale"></i> Cases</h2>
-                    <button class="add-btn" onclick="openAddCaseModal()"><i class="fas fa-plus"></i> Add Case</button>
+                <div class="dashboard-section" id="casesSection" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-balance-scale"></i> Cases</h2>
+                        <button class="add-btn" onclick="openAddCaseModal()"><i class="fas fa-plus"></i> Add Case</button>
+                    </div>
+                    <table class="project-table" id="casesTable">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Category</th>
+                                <th>Plaintiff</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
-                <table class="project-table" id="casesTable">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Status</th>
-                            <th>Category</th>
-                            <th>Plaintiff</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
     <!-- Add/Edit Project Modal -->
     <div class="modal" id="projectModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
