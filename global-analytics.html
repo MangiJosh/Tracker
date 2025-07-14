@@ -195,6 +195,25 @@
         .recent-table tr:last-child td {
             border-bottom: none;
         }
+        .view-btn {
+            background: linear-gradient(90deg, #1e88e5, #43a047);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 0.4em 1.2em;
+            font-size: 0.95em;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(30,136,229,0.10);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .view-btn:hover {
+            background: linear-gradient(90deg, #43a047, #1e88e5);
+            box-shadow: 0 4px 16px rgba(30,136,229,0.18);
+        }
         @media (max-width: 900px) {
             .charts-section { flex-direction: column; gap: 1.5rem; }
             .chart-card { max-width: 100%; }
@@ -434,7 +453,7 @@ function renderRecentProjects() {
         <td>${p.municipality}</td>
         <td>R ${p.budget.toLocaleString()}</td>
         <td>${p.progress}%</td>
-        <td><button class="action-btn" title="View" onclick="openViewProjectModal(${i})"><i class="fas fa-eye"></i> View Project</button></td>
+        <td><button class="view-btn" title="View" onclick="openViewProjectModal(${i})"><i class="fas fa-eye"></i> View Project</button></td>
     </tr>`).join('');
 }
 
