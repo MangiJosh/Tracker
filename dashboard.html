@@ -795,7 +795,7 @@
                 <!--<li><a href="#" onclick="openAddProjectModal();return false;"><i class="fas fa-plus-circle"></i> Add Project</a></li>-->
                 <li><a href="#" onclick="showSection('contractors')"><i class="fas fa-users"></i> Contractors</a></li>
                 <li><a href="#" onclick="showSection('cases')"><i class="fas fa-balance-scale"></i> Cases</a></li>
-                <li><a href="#" onclick="showSection('stats')"><i class="fas fa-chart-pie"></i> Stats</a></li>
+                <li><a href="#" onclick="showSection('analytics')"><i class="fas fa-chart-pie"></i> Analytics</a></li>
             </ul>
             <div class="sidebar-footer">
                 &copy; 2024 ProgressWatch<br>Admin Dashboard Demo
@@ -875,8 +875,8 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <div class="dashboard-section" id="statsSection" style="display: none;">
-                <h2><i class="fas fa-chart-pie"></i> Statistics</h2>
+            <div class="dashboard-section" id="analyticsSection" style="display: none;">
+                <h2><i class="fas fa-chart-pie"></i> Analytics</h2>
                 <div id="statsCharts" style="min-height:200px;color:#888;">
                     <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
                         <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(30,136,229,0.08);padding:2rem;max-width:400px;width:100%;margin-bottom:2rem;">
@@ -1660,7 +1660,7 @@ function showSection(sectionName) {
     document.getElementById('dashboardSection').style.display = 'none';
     document.getElementById('projectsSection').style.display = 'none';
     document.getElementById('contractorsSection').style.display = 'none';
-    document.getElementById('statsSection').style.display = 'none';
+    document.getElementById('analyticsSection').style.display = 'none';
     document.getElementById('casesSection').style.display = 'none';
     
     // Show selected section
@@ -1683,7 +1683,7 @@ function showSection(sectionName) {
         case 'contractors':
             renderContractors();
             break;
-        case 'stats':
+        case 'analytics':
             renderStatsCharts();
             break;
         case 'cases':
