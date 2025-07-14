@@ -1754,7 +1754,10 @@ function showSection(sectionName, event) {
     
     // Show selected section
     document.getElementById(sectionName + 'Section').style.display = 'block';
-    
+    // If analytics, render charts now that canvases are visible
+    if (sectionName === 'analytics') {
+        renderStatsCharts();
+    }
     // Update active menu item
     if (event) {
         document.querySelectorAll('.sidebar-menu a').forEach(link => {
