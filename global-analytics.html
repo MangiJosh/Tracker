@@ -478,6 +478,28 @@ window.onload = renderAll;
                 }
             });
         });
+
+function openViewProjectModal(idx) {
+    const filtered = getFilteredProjects();
+    const recent = filtered.slice(-7).reverse();
+    const p = recent[idx];
+    if (!p) return;
+    document.getElementById('viewProjectTitle').textContent = p.title;
+    document.getElementById('viewProjectDetails').innerHTML = `
+        <div style="margin-bottom:1.2em;">
+            <span class="status-badge ${p.status.toLowerCase()}" style="margin-right:0.7em;">${p.status}</span>
+            <span style="font-weight:600; color:#1e88e5;">${p.category.charAt(0).toUpperCase() + p.category.slice(1)}</span>
+        </div>
+        <p><strong>Municipality:</strong> ${p.municipality}</p>
+        <p><strong>Budget:</strong> R ${p.budget.toLocaleString()}</p>
+        <p><strong>Progress:</strong> ${p.progress}%</p>
+        <p><strong>Contractor:</strong> ${p.contractor || '-'}</p>
+    `;
+    document.getElementById('viewProjectModal').style.display = 'flex';
+}
+function closeViewProjectModal() {
+    document.getElementById('viewProjectModal').style.display = 'none';
+}
     </script>
 </body>
 </html> 
