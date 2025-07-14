@@ -58,26 +58,23 @@
         .footer-section p, .footer-section a { color: #ccc; text-decoration: none; line-height: 1.8; }
         .footer-section a:hover { color: #1e88e5; }
         .footer-bottom { border-top: 1px solid #555; padding-top: 1rem; color: #999; text-align: center; }
-        /* Remove the image below the hero section and add styles for a flex layout in the dashboard explanation section */
+        /* Adjust dashboard section layout so image is below heading and above text */
         .about-dashboard-flex {
           display: flex;
+          flex-direction: column;
           align-items: flex-start;
-          gap: 2.5rem;
+          gap: 1.5rem;
           max-width: 1200px;
           margin: 0 auto;
         }
-        @media (max-width: 900px) {
-          .about-dashboard-flex { flex-direction: column; gap: 1.5rem; }
-        }
-        .about-dashboard-text { flex: 2; }
         .about-dashboard-image {
-          flex: 1;
-          max-width: 400px;
-          min-width: 220px;
           width: 100%;
+          max-width: 600px;
           border-radius: 12px;
           box-shadow: 0 4px 24px rgba(30,136,229,0.10);
           object-fit: cover;
+          margin: 0 auto;
+          display: block;
         }
     </style>
 </head>
@@ -118,8 +115,9 @@
     <!-- Projects & Cases Dashboard Section -->
     <section class="about-section" style="margin-top:1.5rem;">
         <div class="about-dashboard-flex">
+            <h2>How the Projects & Cases Dashboard Works</h2>
+            <img src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&fit=crop&w=600&q=80" class="about-dashboard-image" alt="People collaborating and tracking progress on digital dashboards" />
             <div class="about-dashboard-text">
-                <h2>How the Projects & Cases Dashboard Works</h2>
                 <p>The Projects and Cases dashboards are powerful tools designed to provide real-time insights into public interest projects and legal cases across South Africa. These dashboards aggregate data from multiple sources, allowing users to filter, search, and analyze information by province, municipality, category, status, and date range.</p>
                 <ul style="font-size:1.1rem; color:#444; margin-bottom:1.5rem; padding-left:1.5rem;">
                     <li><strong>Projects Dashboard:</strong> Track the progress, budget, contractors, and milestones of infrastructure, education, healthcare, and climate projects nationwide. Visual charts and key stats help you quickly identify trends and top performers.</li>
@@ -133,7 +131,6 @@
                     <li>Fosters community engagement and informed decision-making.</li>
                 </ul>
             </div>
-            <img src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&fit=crop&w=600&q=80" class="about-dashboard-image" alt="People collaborating and tracking progress on digital dashboards" />
         </div>
     </section>
     <!-- Footer -->
