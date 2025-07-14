@@ -112,7 +112,7 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="cases.html" class="active">Cases</a></li>
-                <li><a href="#about">About</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
         </div>
     </header>
@@ -190,6 +190,10 @@
             <p>&copy; 2024 ProgressWatch. All rights reserved. | Promoting transparency in public projects.</p>
         </div>
     </footer>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
     <style>
         .footer {
             background: #333;
@@ -356,6 +360,18 @@
     function closeNoFilesModal() {
         document.getElementById('noFilesModal').style.display = 'none';
     }
+    // Back to Top Button functionality
+    const backToTopBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            backToTopBtn.style.display = 'block';
+        } else {
+            backToTopBtn.style.display = 'none';
+        }
+    });
+    backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
     </script>
 </body>
 </html> 
