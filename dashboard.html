@@ -1329,17 +1329,17 @@ function renderProjects() {
   const tbody = document.querySelector('#projectTable tbody');
   tbody.innerHTML = '';
   const searchTerm = document.getElementById('projectSearchInput').value.toLowerCase();
-  const filterStatus = document.getElementById('filterStatus').value;
-  const filterCategory = document.getElementById('filterCategory').value;
-  const filterProvince = document.getElementById('filterProvince').value;
+  const filterStatus = document.getElementById('filterStatus').value.toLowerCase();
+  const filterCategory = document.getElementById('filterCategory').value.toLowerCase();
+  const filterProvince = document.getElementById('filterProvince').value.toLowerCase();
 
   projects.forEach(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchTerm) ||
                           project.contractor.toLowerCase().includes(searchTerm) ||
                           project.province.toLowerCase().includes(searchTerm);
-    const matchesStatus = filterStatus === "" || project.status === filterStatus;
-    const matchesCategory = filterCategory === "" || project.category === filterCategory;
-    const matchesProvince = filterProvince === "" || project.province === filterProvince;
+    const matchesStatus = filterStatus === "" || project.status.toLowerCase() === filterStatus;
+    const matchesCategory = filterCategory === "" || project.category.toLowerCase() === filterCategory;
+    const matchesProvince = filterProvince === "" || project.province.toLowerCase() === filterProvince;
 
     if (matchesSearch && matchesStatus && matchesCategory && matchesProvince) {
       const tr = document.createElement('tr');
