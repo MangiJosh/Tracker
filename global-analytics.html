@@ -92,8 +92,9 @@
             border: 1px solid #e3eaf3;
             min-width: 0;
             display: flex;
-            align-items: center;
-            gap: 0.3em;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.1em;
         }
         .stat-card::before {
             content: '';
@@ -119,13 +120,15 @@
             text-transform: uppercase;
             letter-spacing: 0.2px;
             display: inline;
+            margin-right: 0.3em;
         }
         .stat-value {
             font-size: 0.95rem;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             color: #1e88e5;
-            line-height: 1;
+            line-height: 1.1;
+            margin-top: 0.1em;
         }
         .charts-section {
             display: flex;
@@ -259,13 +262,13 @@
                 </div>
             </div>
             <div class="analytics-stats" id="analyticsStats" style="scroll-margin-top: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.4rem; align-items: center; margin-bottom: 1.2rem; font-size: 0.85rem;">
-                <div class="stat-card"><span class="stat-icon"><i class="fas fa-folder-open"></i></span><span class="stat-label">Total Projects</span><span class="stat-value">${total}</span></div>
-                <div class="stat-card"><span class="stat-icon"><i class="fas fa-bolt"></i></span><span class="stat-label">Active</span><span class="stat-value">${active}</span></div>
-                <div class="stat-card"><span class="stat-icon"><i class="fas fa-check-circle"></i></span><span class="stat-label">Completed</span><span class="stat-value">${completed}</span></div>
-                <div class="stat-card"><span class="stat-icon"><i class="fas fa-clock"></i></span><span class="stat-label">Delayed</span><span class="stat-value">${delayed}</span></div>
-                <div class="stat-card"><span class="stat-icon"><i class="fas fa-lightbulb"></i></span><span class="stat-label">Planning</span><span class="stat-value">${planning}</span></div>
-                <div class="stat-card"><span class="stat-icon"><i class="fas fa-money-bill-wave"></i></span><span class="stat-label">Total Budget</span><span class="stat-value">R ${totalBudget.toLocaleString()}</span></div>
-                <div class="stat-card"><span class="stat-icon"><i class="fas fa-map-marker-alt"></i></span><span class="stat-label">Top Province (Budget)</span><span class="stat-value">${topProvince}</span></div>
+                <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-folder-open"></i></span><span class="stat-label">Total Projects</span></span><span class="stat-value">${total}</span></div>
+                <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-bolt"></i></span><span class="stat-label">Active</span></span><span class="stat-value">${active}</span></div>
+                <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-check-circle"></i></span><span class="stat-label">Completed</span></span><span class="stat-value">${completed}</span></div>
+                <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-clock"></i></span><span class="stat-label">Delayed</span></span><span class="stat-value">${delayed}</span></div>
+                <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-lightbulb"></i></span><span class="stat-label">Planning</span></span><span class="stat-value">${planning}</span></div>
+                <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-money-bill-wave"></i></span><span class="stat-label">Total Budget</span></span><span class="stat-value">R ${totalBudget.toLocaleString()}</span></div>
+                <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-map-marker-alt"></i></span><span class="stat-label">Top Province (Budget)</span></span><span class="stat-value">${topProvince}</span></div>
             </div>
             <div class="charts-section">
                 <div class="chart-card" id="projectsByProvince" style="scroll-margin-top: 80px;" tabindex="-1"><canvas id="projectsByProvinceChart" width="400" height="320"></canvas></div>
@@ -344,13 +347,13 @@ function renderStats() {
         return sorted.length ? sorted[0][0] : '-';
     })();
     document.getElementById('analyticsStats').innerHTML = `
-        <div class="stat-card"><span class="stat-icon"><i class="fas fa-folder-open"></i></span><span class="stat-label">Total Projects</span><span class="stat-value">${total}</span></div>
-        <div class="stat-card"><span class="stat-icon"><i class="fas fa-bolt"></i></span><span class="stat-label">Active</span><span class="stat-value">${active}</span></div>
-        <div class="stat-card"><span class="stat-icon"><i class="fas fa-check-circle"></i></span><span class="stat-label">Completed</span><span class="stat-value">${completed}</span></div>
-        <div class="stat-card"><span class="stat-icon"><i class="fas fa-clock"></i></span><span class="stat-label">Delayed</span><span class="stat-value">${delayed}</span></div>
-        <div class="stat-card"><span class="stat-icon"><i class="fas fa-lightbulb"></i></span><span class="stat-label">Planning</span><span class="stat-value">${planning}</span></div>
-        <div class="stat-card"><span class="stat-icon"><i class="fas fa-money-bill-wave"></i></span><span class="stat-label">Total Budget</span><span class="stat-value">R ${totalBudget.toLocaleString()}</span></div>
-        <div class="stat-card"><span class="stat-icon"><i class="fas fa-map-marker-alt"></i></span><span class="stat-label">Top Province (Budget)</span><span class="stat-value">${topProvince}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-folder-open"></i></span><span class="stat-label">Total Projects</span></span><span class="stat-value">${total}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-bolt"></i></span><span class="stat-label">Active</span></span><span class="stat-value">${active}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-check-circle"></i></span><span class="stat-label">Completed</span></span><span class="stat-value">${completed}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-clock"></i></span><span class="stat-label">Delayed</span></span><span class="stat-value">${delayed}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-lightbulb"></i></span><span class="stat-label">Planning</span></span><span class="stat-value">${planning}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-money-bill-wave"></i></span><span class="stat-label">Total Budget</span></span><span class="stat-value">R ${totalBudget.toLocaleString()}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-map-marker-alt"></i></span><span class="stat-label">Top Province (Budget)</span></span><span class="stat-value">${topProvince}</span></div>
     `;
 }
 
