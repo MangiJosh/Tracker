@@ -795,6 +795,7 @@
                 <!--<li><a href="#" onclick="openAddProjectModal();return false;"><i class="fas fa-plus-circle"></i> Add Project</a></li>-->
                 <li><a href="#" onclick="showSection('contractors')"><i class="fas fa-users"></i> Contractors</a></li>
                 <li><a href="#" onclick="showSection('stats')"><i class="fas fa-chart-pie"></i> Stats</a></li>
+                <li><a href="#" onclick="showSection('cases')"><i class="fas fa-balance-scale"></i> Cases</a></li>
             </ul>
             <div class="sidebar-footer">
                 &copy; 2024 ProgressWatch<br>Admin Dashboard Demo
@@ -886,6 +887,23 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="dashboard-section" id="casesSection" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="margin: 0; display: flex; align-items: center; gap: 0.7rem;"><i class="fas fa-balance-scale"></i> Cases</h2>
+                    <button class="add-btn" onclick="openAddCaseModal()"><i class="fas fa-plus"></i> Add Case</button>
+                </div>
+                <table class="project-table" id="casesTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </main>
     </div>
@@ -1087,6 +1105,34 @@
                 <button class="add-btn" style="background:#d32f2f;" onclick="confirmDeleteMilestone()">Delete</button>
                 <button class="add-btn" style="background:#bdbdbd;color:#333;" onclick="closeDeleteMilestoneModal()">Cancel</button>
             </div>
+        </div>
+    </div>
+    <!-- Add/Edit Case Modal -->
+    <div class="modal" id="caseModal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCaseModal()" style="position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.5rem;color:#1976d2;cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h2 id="caseModalTitle">Add Case</h2>
+            <form id="caseForm">
+                <div class="project-form-row">
+                    <div>
+                        <label>Title</label>
+                        <input type="text" id="caseTitle" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                    </div>
+                    <div>
+                        <label>Status</label>
+                        <select id="caseStatus" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                            <option value="open">Open</option>
+                            <option value="closed">Closed</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Category</label>
+                        <input type="text" id="caseCategory" required style="width:100%;padding:0.7rem;margin-top:0.3rem;">
+                    </div>
+                </div>
+                <button type="submit" class="add-btn" style="margin-top:1rem;"><i class="fas fa-save"></i> Save Case</button>
+            </form>
         </div>
     </div>
     <script>
@@ -1615,6 +1661,7 @@ function showSection(sectionName) {
     document.getElementById('projectsSection').style.display = 'none';
     document.getElementById('contractorsSection').style.display = 'none';
     document.getElementById('statsSection').style.display = 'none';
+    document.getElementById('casesSection').style.display = 'none';
     
     // Show selected section
     document.getElementById(sectionName + 'Section').style.display = 'block';
@@ -1638,6 +1685,9 @@ function showSection(sectionName) {
             break;
         case 'stats':
             renderStatsCharts();
+            break;
+        case 'cases':
+            renderCases();
             break;
     }
 }
@@ -1777,6 +1827,70 @@ function renderStatsCharts() {
       }
     }
   });
+}
+
+// Cases
+let cases = [
+  { id: 1, title: "Election Integrity", status: "open", category: "Elections" },
+  { id: 2, title: "School Funding Transparency", status: "pending", category: "Education" }
+];
+let nextCaseId = 3;
+let editingCaseId = null;
+function renderCases() {
+  const tbody = document.querySelector('#casesTable tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  cases.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${c.title}</td>
+      <td><span class="status-badge ${c.status}">${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span></td>
+      <td>${c.category}</td>
+      <td>
+        <button class="action-btn" title="Edit" onclick="editCase(${c.id})"><i class="fas fa-edit"></i></button>
+        <button class="action-btn" title="Delete" onclick="deleteCase(${c.id})"><i class="fas fa-trash"></i></button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+function openAddCaseModal() {
+  editingCaseId = null;
+  document.getElementById('caseModalTitle').textContent = 'Add Case';
+  document.getElementById('caseTitle').value = '';
+  document.getElementById('caseStatus').value = 'open';
+  document.getElementById('caseCategory').value = '';
+  document.getElementById('caseModal').style.display = 'flex';
+}
+function closeCaseModal() {
+  document.getElementById('caseModal').style.display = 'none';
+}
+document.getElementById('caseForm').onsubmit = function(e) {
+  e.preventDefault();
+  const title = document.getElementById('caseTitle').value;
+  const status = document.getElementById('caseStatus').value;
+  const category = document.getElementById('caseCategory').value;
+  if (editingCaseId) {
+    const c = cases.find(c => c.id === editingCaseId);
+    c.title = title; c.status = status; c.category = category;
+  } else {
+    cases.push({ id: nextCaseId++, title, status, category });
+  }
+  closeCaseModal();
+  renderCases();
+};
+function editCase(id) {
+  const c = cases.find(c => c.id === id);
+  editingCaseId = id;
+  document.getElementById('caseModalTitle').textContent = 'Edit Case';
+  document.getElementById('caseTitle').value = c.title;
+  document.getElementById('caseStatus').value = c.status;
+  document.getElementById('caseCategory').value = c.category;
+  document.getElementById('caseModal').style.display = 'flex';
+}
+function deleteCase(id) {
+  cases = cases.filter(c => c.id !== id);
+  renderCases();
 }
     </script>
 </body>
