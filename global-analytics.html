@@ -174,6 +174,19 @@
             border-bottom: 1px solid #f0f0f0;
             font-size: 0.95rem;
         }
+        .status-badge {
+            display: inline-block;
+            padding: 0.2em 0.7em;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: capitalize;
+            color: #fff;
+        }
+        .status-badge.active { background: #1e88e5; }
+        .status-badge.completed { background: #43a047; }
+        .status-badge.delayed { background: #e53935; }
+        .status-badge.planning { background: #fbc02d; color: #333; }
         .recent-table th {
             background: #f5f7fa;
             color: #1e88e5;
@@ -407,7 +420,15 @@ function renderRecentProjects() {
     const filtered = getFilteredProjects();
     const recent = filtered.slice(-7).reverse();
     const tbody = document.querySelector('#recentProjectsTable tbody');
-    tbody.innerHTML = recent.map(p=>`<tr><td>${p.title}</td><td>${p.status}</td><td>${p.category}</td><td>${p.province}</td><td>${p.municipality}</td><td>R ${p.budget.toLocaleString()}</td><td>${p.progress}%</td></tr>`).join('');
+    tbody.innerHTML = recent.map(p=>`<tr>
+        <td>${p.title}</td>
+        <td><span class="status-badge ${p.status.toLowerCase()}">${p.status}</span></td>
+        <td>${p.category}</td>
+        <td>${p.province}</td>
+        <td>${p.municipality}</td>
+        <td>R ${p.budget.toLocaleString()}</td>
+        <td>${p.progress}%</td>
+    </tr>`).join('');
 }
 
 function renderAll() {
