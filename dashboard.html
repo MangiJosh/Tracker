@@ -794,8 +794,8 @@
                 <li><a href="#" onclick="showSection('projects')"><i class="fas fa-folder-open"></i> Projects</a></li>
                 <!--<li><a href="#" onclick="openAddProjectModal();return false;"><i class="fas fa-plus-circle"></i> Add Project</a></li>-->
                 <li><a href="#" onclick="showSection('contractors')"><i class="fas fa-users"></i> Contractors</a></li>
-                <li><a href="#" onclick="showSection('stats')"><i class="fas fa-chart-pie"></i> Stats</a></li>
                 <li><a href="#" onclick="showSection('cases')"><i class="fas fa-balance-scale"></i> Cases</a></li>
+                <li><a href="#" onclick="showSection('stats')"><i class="fas fa-chart-pie"></i> Stats</a></li>
             </ul>
             <div class="sidebar-footer">
                 &copy; 2024 ProgressWatch<br>Admin Dashboard Demo
@@ -1697,9 +1697,30 @@ showSection('dashboard');
 
 document.addEventListener('DOMContentLoaded', function() {
   ['projectSearchInput', 'filterStatus', 'filterCategory', 'filterProvince'].forEach(id => {
-    document.getElementById(id).addEventListener('input', renderProjects);
-    document.getElementById(id).addEventListener('change', renderProjects);
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', renderProjects);
+      el.addEventListener('change', renderProjects);
+    }
   });
+  // Attach case form event listener only if it exists
+  const caseForm = document.getElementById('caseForm');
+  if (caseForm) {
+    caseForm.onsubmit = function(e) {
+      e.preventDefault();
+      const title = document.getElementById('caseTitle').value;
+      const status = document.getElementById('caseStatus').value;
+      const category = document.getElementById('caseCategory').value;
+      if (editingCaseId) {
+        const c = cases.find(c => c.id === editingCaseId);
+        c.title = title; c.status = status; c.category = category;
+      } else {
+        cases.push({ id: nextCaseId++, title, status, category });
+      }
+      closeCaseModal();
+      renderCases();
+    };
+  }
 });
 
 // Milestone file preview logic
@@ -1831,10 +1852,32 @@ function renderStatsCharts() {
 
 // Cases
 let cases = [
-  { id: 1, title: "Election Integrity", status: "open", category: "Elections" },
-  { id: 2, title: "School Funding Transparency", status: "pending", category: "Education" }
+  {
+    id: 1,
+    title: "Electoral Reform Challenge",
+    status: "open",
+    category: "Elections"
+  },
+  {
+    id: 2,
+    title: "Public Procurement Transparency",
+    status: "pending",
+    category: "Transparency"
+  },
+  {
+    id: 3,
+    title: "Environmental Protection Mandate",
+    status: "closed",
+    category: "Environment"
+  },
+  {
+    id: 4,
+    title: "Education Funding Equity",
+    status: "open",
+    category: "Education"
+  }
 ];
-let nextCaseId = 3;
+let nextCaseId = 5;
 let editingCaseId = null;
 function renderCases() {
   const tbody = document.querySelector('#casesTable tbody');
@@ -1865,20 +1908,6 @@ function openAddCaseModal() {
 function closeCaseModal() {
   document.getElementById('caseModal').style.display = 'none';
 }
-document.getElementById('caseForm').onsubmit = function(e) {
-  e.preventDefault();
-  const title = document.getElementById('caseTitle').value;
-  const status = document.getElementById('caseStatus').value;
-  const category = document.getElementById('caseCategory').value;
-  if (editingCaseId) {
-    const c = cases.find(c => c.id === editingCaseId);
-    c.title = title; c.status = status; c.category = category;
-  } else {
-    cases.push({ id: nextCaseId++, title, status, category });
-  }
-  closeCaseModal();
-  renderCases();
-};
 function editCase(id) {
   const c = cases.find(c => c.id === id);
   editingCaseId = id;
