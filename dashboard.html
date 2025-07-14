@@ -851,7 +851,6 @@
                             <th>Category</th>
                             <th>Province</th>
                             <th>Budget</th>
-                            <th>Contractor</th>
                             <th>Progress</th>
                             <th>Actions</th>
                         </tr>
@@ -1350,7 +1349,6 @@ function renderProjects() {
         <td>${capitalize(project.category)}</td>
         <td>${capitalize(project.province)}</td>
         <td>R ${project.budget.toLocaleString()}</td>
-        <td>${project.contractor}</td>
         <td>${project.progress}%</td>
         <td>
           <button class="action-btn" title="View" onclick="viewProject(${project.id})"><i class="fas fa-eye"></i></button>
