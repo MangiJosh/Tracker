@@ -329,16 +329,71 @@
     <script>
 // --- Demo Data ---
 const cases = [
-  { id: 1, title: "Electoral Reform Challenge", status: "open", category: "constitutional", province: "gauteng", municipality: "johannesburg", plaintiff: "Democratic Alliance", date: "2024-06-01" },
-  { id: 2, title: "Public Procurement Transparency", status: "pending", category: "public procurement", province: "western cape", municipality: "cape town", plaintiff: "Economic Freedom Fighters", date: "2024-05-18" },
-  { id: 3, title: "Environmental Protection Mandate", status: "closed", category: "environmental", province: "kwazulu-natal", municipality: "ethekwini", plaintiff: "Green Future Coalition", date: "2024-04-10" },
-  { id: 4, title: "Education Funding Equity", status: "open", category: "education", province: "eastern cape", municipality: "port elizabeth", plaintiff: "African National Congress", date: "2024-06-10" },
-  { id: 5, title: "Hospital Equipment Procurement", status: "pending", category: "health", province: "limpopo", municipality: "polokwane", plaintiff: "HealthWatch", date: "2024-05-25" },
-  { id: 6, title: "Water Rights Dispute", status: "closed", category: "environmental", province: "free state", municipality: "bloemfontein", plaintiff: "Farmers Union", date: "2024-03-15" },
-  { id: 7, title: "Municipal Budget Challenge", status: "open", category: "other", province: "north west", municipality: "mafikeng", plaintiff: "Inkatha Freedom Party", date: "2024-06-12" },
-  { id: 8, title: "School Safety Regulations", status: "pending", category: "education", province: "mpumalanga", municipality: "nelspruit", plaintiff: "SafeSchools SA", date: "2024-05-30" },
-  { id: 9, title: "Urban Air Quality", status: "closed", category: "environmental", province: "northern cape", municipality: "kimberley", plaintiff: "Clean Air Initiative", date: "2024-04-22" },
-  { id: 10, title: "Healthcare Access Case", status: "open", category: "health", province: "kwazulu-natal", municipality: "ethekwini", plaintiff: "United Democratic Movement", date: "2024-06-15" }
+  { id: 1, title: "Electoral Reform Challenge", status: "open", category: "constitutional", province: "gauteng", municipality: "johannesburg", plaintiff: "Democratic Action Party", date: "2024-06-01",
+    summary: "A case challenging the constitutionality of recent changes to the national electoral law, arguing it undermines fair representation.",
+    details: "The Democratic Action Party filed this case in the Constitutional Court, seeking to overturn amendments to the electoral law passed in May 2024. The party claims the changes disproportionately affect smaller parties and violate the principle of proportional representation. The case has attracted significant media attention and public debate.",
+    updates: [
+      { date: "2024-06-05", message: "Court hearing scheduled for June 20, 2024." },
+      { date: "2024-06-10", message: "Additional evidence submitted by plaintiff." }
+    ]
+  },
+  { id: 2, title: "Public Procurement Transparency", status: "pending", category: "public procurement", province: "western cape", municipality: "cape town", plaintiff: "Economic Freedom Fighters", date: "2024-05-18",
+    summary: "A lawsuit demanding greater transparency in government procurement processes, following reports of irregularities in major contracts.",
+    details: "EFF is calling for the release of all procurement documents related to the 2023-2024 infrastructure projects. The case aims to set a precedent for open access to public contract information. The government has requested an extension to respond to the suit.",
+    updates: [
+      { date: "2024-05-22", message: "Government requested extension to respond to the suit." }
+    ]
+  },
+  { id: 3, title: "Environmental Protection Mandate", status: "closed", category: "environmental", province: "kwazulu-natal", municipality: "ethekwini", plaintiff: "Green Future Coalition", date: "2024-04-10",
+    summary: "A case filed to enforce stricter environmental regulations on industrial polluters in the River Valley region.",
+    details: "The Green Future Coalition successfully argued that several factories were exceeding legal pollution limits. The court ordered immediate remediation and imposed fines. This case is seen as a landmark victory for environmental advocacy groups.",
+    updates: []
+  },
+  { id: 4, title: "Education Funding Equity", status: "open", category: "education", province: "eastern cape", municipality: "port elizabeth", plaintiff: "African National Congress", date: "2024-06-10",
+    summary: "A class action suit demanding equitable funding for rural and urban public schools.",
+    details: "ANC alleges that current funding formulas disadvantage rural schools, leading to disparities in resources and outcomes. The case seeks a court order to revise the funding model and ensure fair distribution of education funds.",
+    updates: [
+      { date: "2024-06-12", message: "Case filed in High Court." }
+    ]
+  },
+  { id: 5, title: "Hospital Equipment Procurement", status: "pending", category: "health", province: "limpopo", municipality: "polokwane", plaintiff: "HealthWatch", date: "2024-05-25",
+    summary: "A case filed to challenge the procurement of substandard hospital equipment in the region.",
+    details: "HealthWatch alleges that the Limpopo Provincial Government failed to procure adequate medical supplies and equipment for public hospitals. The case seeks to ensure that all hospitals in the province have access to necessary medical resources.",
+    updates: [
+      { date: "2024-05-28", message: "Government responded to the case, stating they are reviewing the procurement process." }
+    ]
+  },
+  { id: 6, title: "Water Rights Dispute", status: "closed", category: "environmental", province: "free state", municipality: "bloemfontein", plaintiff: "Farmers Union", date: "2024-03-15",
+    summary: "A case filed by farmers against the Free State Provincial Government for inadequate water supply.",
+    details: "The Farmers Union claims that the Free State Provincial Government failed to provide sufficient water for agricultural purposes, causing significant economic losses. The case was settled in April 2024, with the government agreeing to improve water distribution and infrastructure.",
+    updates: []
+  },
+  { id: 7, title: "Municipal Budget Challenge", status: "open", category: "other", province: "north west", municipality: "mafikeng", plaintiff: "Inkatha Freedom Party", date: "2024-06-12",
+    summary: "A case filed to challenge the allocation of municipal funds for infrastructure projects.",
+    details: "The Inkatha Freedom Party alleges that the Mafikeng Municipality has allocated disproportionately large portions of its budget to political campaigns and personal expenses, rather than infrastructure development. The case seeks to ensure that municipal funds are used for their intended purposes.",
+    updates: [
+      { date: "2024-06-14", message: "Municipality responded, stating they are conducting an internal audit." }
+    ]
+  },
+  { id: 8, title: "School Safety Regulations", status: "pending", category: "education", province: "mpumalanga", municipality: "nelspruit", plaintiff: "SafeSchools SA", date: "2024-05-30",
+    summary: "A case filed to demand stricter safety regulations for schools in the region.",
+    details: "SafeSchools SA alleges that the Nelspruit Municipality has failed to enforce adequate safety measures in public schools, resulting in numerous accidents and incidents. The case seeks to ensure that all schools in the municipality meet minimum safety standards.",
+    updates: [
+      { date: "2024-05-31", message: "Municipality responded, stating they are drafting new regulations." }
+    ]
+  },
+  { id: 9, title: "Urban Air Quality", status: "closed", category: "environmental", province: "northern cape", municipality: "kimberley", plaintiff: "Clean Air Initiative", date: "2024-04-22",
+    summary: "A case filed to enforce stricter air quality standards in the Kimberley region.",
+    details: "The Clean Air Initiative alleges that the Kimberley Municipality has failed to implement adequate measures to reduce air pollution, particularly from industrial sources. The case was settled in May 2024, with the municipality agreeing to improve air quality monitoring and enforcement.",
+    updates: []
+  },
+  { id: 10, title: "Healthcare Access Case", status: "open", category: "health", province: "kwazulu-natal", municipality: "ethekwini", plaintiff: "United Democratic Movement", date: "2024-06-15",
+    summary: "A case filed to demand improved healthcare access for residents in the eThekwini Municipality.",
+    details: "The United Democratic Movement alleges that the eThekwini Municipality has failed to provide adequate healthcare services, particularly in rural areas. The case seeks to ensure that all residents have access to quality healthcare facilities.",
+    updates: [
+      { date: "2024-06-16", message: "Municipality responded, stating they are reviewing the healthcare infrastructure." }
+    ]
+  }
 ];
 
 function getFilteredCases() {
@@ -470,10 +525,10 @@ function openViewCaseModal(idx) {
     const c = getFilteredCases().slice(-7).reverse()[idx];
     document.getElementById('viewCaseTitle').textContent = c.title;
     document.getElementById('viewCaseMeta').innerHTML = `Filed by <strong>${c.plaintiff}</strong> &middot; ${new Date(c.date).toLocaleDateString()}`;
-    document.getElementById('viewCaseStatus').innerHTML = `<strong>Status:</strong> <span class='case-status status-${c.status}'>${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span>`;
-    document.getElementById('viewCaseSummary').innerHTML = `<strong>Summary:</strong> ${c.summary || 'No summary available.'}`;
-    document.getElementById('viewCaseFull').innerHTML = `<strong>Details:</strong> ${c.details || 'No details available.'}`;
-    // Updates (demo)
+    document.getElementById('viewCaseStatus').innerHTML = `<strong>Status:</strong> <span class='case-status status-${c.status}' style='padding:0.25em 0.9em;border-radius:16px;font-size:0.98em;font-weight:600;background:${c.status==='open'?'#e3f2fd':c.status==='pending'?'#fff8e1':'#e8f5e9'};color:${c.status==='open'?'#1e88e5':c.status==='pending'?'#fbc02d':'#43a047'};margin-left:0.5em;'>${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span>`;
+    document.getElementById('viewCaseSummary').innerHTML = `<strong>Summary:</strong> <span style='color:#444;'>${c.summary || 'No summary available.'}</span>`;
+    document.getElementById('viewCaseFull').innerHTML = `<strong>Details:</strong> <span style='color:#444;'>${c.details || 'No details available.'}</span>`;
+    // Updates
     let updates = c.updates || [];
     if (updates.length > 0) {
         document.getElementById('viewCaseUpdates').innerHTML = `<strong>Updates:</strong>` +
