@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cases Analytics - ProgressWatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            color: #333;
+            min-height: 100vh;
+        }
+        .cases-analytics-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem 1rem 2rem 1rem;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2.5rem;
+        }
+        .header a {
+            background: linear-gradient(90deg, #1e88e5, #43a047);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 24px;
+            padding: 0.7rem 2rem;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(30,136,229,0.10);
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .header a:hover {
+            background: linear-gradient(90deg, #43a047, #1e88e5);
+        }
+        .filters {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0.7rem;
+            margin-bottom: 1.1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(30,136,229,0.06);
+            padding: 1.1rem 1rem 1.1rem 1rem;
+            font-size: 0.85rem;
+        }
+        .filters label {
+            font-weight: 600;
+            color: #1e88e5;
+            margin-right: 0.3rem;
+            font-size: 0.85em;
+        }
+        .filters select, .filters input[type="date"] {
+            padding: 0.3rem 0.7rem;
+            border-radius: 14px;
+            border: 1px solid #b0bec5;
+            font-size: 0.85rem;
+            min-width: 110px;
+        }
+        .analytics-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.4rem;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            padding: 0.8rem 0.3rem 0.8rem 0.3rem;
+            min-height: 60px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e3eaf3;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.1em;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #1e88e5, #43a047);
+        }
+        .stat-icon {
+            font-size: 0.95rem;
+            margin-bottom: 0.1rem;
+            color: #1e88e5;
+            opacity: 0.8;
+            margin-right: 0.3em;
+        }
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+            font-size: 0.65rem;
+            margin-bottom: 0.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+            display: inline;
+            margin-right: 0.3em;
+        }
+        .stat-value {
+            font-size: 0.95rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #1e88e5;
+            line-height: 1.1;
+            margin-top: 0.5em;
+        }
+        .charts-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+            justify-content: center;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(30,136,229,0.08);
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+        }
+        .recent-cases {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(30,136,229,0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .recent-cases h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #1e88e5;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .recent-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .recent-table th, .recent-table td {
+            padding: 0.8rem 0.7rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95rem;
+        }
+        .recent-table th {
+            background: #f5f7fa;
+            color: #1e88e5;
+            font-weight: 700;
+        }
+        .recent-table tr:last-child td {
+            border-bottom: none;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.2em 0.7em;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: capitalize;
+            color: #fff;
+        }
+        .status-badge.open { background: #1e88e5; }
+        .status-badge.closed { background: #43a047; }
+        .status-badge.pending { background: #fbc02d; color: #333; }
+        @media (max-width: 900px) {
+            .charts-section { flex-direction: column; gap: 1.5rem; }
+            .chart-card { max-width: 100%; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="cases-analytics-container">
+        <div class="header">
+            <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+        <div class="filters">
+            <div><label for="province">Province:</label>
+                <select id="province">
+                    <option value="">All Provinces</option>
+                    <option value="gauteng">Gauteng</option>
+                    <option value="western cape">Western Cape</option>
+                    <option value="kwazulu-natal">KwaZulu-Natal</option>
+                    <option value="eastern cape">Eastern Cape</option>
+                    <option value="limpopo">Limpopo</option>
+                    <option value="free state">Free State</option>
+                    <option value="mpumalanga">Mpumalanga</option>
+                    <option value="north west">North West</option>
+                    <option value="northern cape">Northern Cape</option>
+                </select>
+            </div>
+            <div><label for="municipality">Municipality:</label>
+                <select id="municipality">
+                    <option value="">All Municipalities</option>
+                    <option value="johannesburg">Johannesburg</option>
+                    <option value="cape town">Cape Town</option>
+                    <option value="ethekwini">eThekwini</option>
+                    <option value="nelspruit">Nelspruit</option>
+                    <option value="polokwane">Polokwane</option>
+                    <option value="bloemfontein">Bloemfontein</option>
+                    <option value="kimberley">Kimberley</option>
+                    <option value="mafikeng">Mafikeng</option>
+                    <option value="port elizabeth">Port Elizabeth</option>
+                </select>
+            </div>
+            <div><label for="category">Category:</label>
+                <select id="category">
+                    <option value="">All Categories</option>
+                    <option value="constitutional">Constitutional</option>
+                    <option value="environmental">Environmental</option>
+                    <option value="education">Education</option>
+                    <option value="public procurement">Public Procurement</option>
+                    <option value="health">Health</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div><label for="status">Status:</label>
+                <select id="status">
+                    <option value="">All Statuses</option>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                    <option value="pending">Pending</option>
+                </select>
+            </div>
+            <div><label for="startDate">Start Date:</label>
+                <input type="date" id="startDate">
+            </div>
+            <div><label for="endDate">End Date:</label>
+                <input type="date" id="endDate">
+            </div>
+        </div>
+        <div class="analytics-stats" id="analyticsStats" style="scroll-margin-top: 80px;"></div>
+        <div class="charts-section">
+            <div class="chart-card"><canvas id="casesByProvinceChart" width="400" height="320"></canvas></div>
+            <div class="chart-card"><canvas id="casesByStatusChart" width="400" height="320"></canvas></div>
+            <div class="chart-card"><canvas id="casesByCategoryChart" width="400" height="320"></canvas></div>
+        </div>
+        <div class="recent-cases">
+            <h2><i class="fas fa-list"></i> Recent Cases</h2>
+            <table class="recent-table" id="recentCasesTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Category</th>
+                        <th>Province</th>
+                        <th>Municipality</th>
+                        <th>Plaintiff</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+// --- Demo Data ---
+const cases = [
+  { id: 1, title: "Electoral Reform Challenge", status: "open", category: "constitutional", province: "gauteng", municipality: "johannesburg", plaintiff: "Democratic Action Party", date: "2024-06-01" },
+  { id: 2, title: "Public Procurement Transparency", status: "pending", category: "public procurement", province: "western cape", municipality: "cape town", plaintiff: "Civic Watch NGO", date: "2024-05-18" },
+  { id: 3, title: "Environmental Protection Mandate", status: "closed", category: "environmental", province: "kwazulu-natal", municipality: "ethekwini", plaintiff: "Green Future Coalition", date: "2024-04-10" },
+  { id: 4, title: "Education Funding Equity", status: "open", category: "education", province: "eastern cape", municipality: "port elizabeth", plaintiff: "Parents for Equal Schools", date: "2024-06-10" },
+  { id: 5, title: "Hospital Equipment Procurement", status: "pending", category: "health", province: "limpopo", municipality: "polokwane", plaintiff: "HealthWatch", date: "2024-05-25" },
+  { id: 6, title: "Water Rights Dispute", status: "closed", category: "environmental", province: "free state", municipality: "bloemfontein", plaintiff: "Farmers Union", date: "2024-03-15" },
+  { id: 7, title: "Municipal Budget Challenge", status: "open", category: "other", province: "north west", municipality: "mafikeng", plaintiff: "Local Residents Group", date: "2024-06-12" },
+  { id: 8, title: "School Safety Regulations", status: "pending", category: "education", province: "mpumalanga", municipality: "nelspruit", plaintiff: "SafeSchools SA", date: "2024-05-30" },
+  { id: 9, title: "Urban Air Quality", status: "closed", category: "environmental", province: "northern cape", municipality: "kimberley", plaintiff: "Clean Air Initiative", date: "2024-04-22" },
+  { id: 10, title: "Healthcare Access Case", status: "open", category: "health", province: "kwazulu-natal", municipality: "ethekwini", plaintiff: "Health4All", date: "2024-06-15" }
+];
+
+function getFilteredCases() {
+    const province = document.getElementById('province').value.toLowerCase();
+    const municipality = document.getElementById('municipality').value.toLowerCase();
+    const category = document.getElementById('category').value.toLowerCase();
+    const status = document.getElementById('status').value.toLowerCase();
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    return cases.filter(c => {
+        let pass = true;
+        if (province && c.province.toLowerCase() !== province) pass = false;
+        if (municipality && c.municipality.toLowerCase() !== municipality) pass = false;
+        if (category && c.category.toLowerCase() !== category) pass = false;
+        if (status && c.status.toLowerCase() !== status) pass = false;
+        if (startDate && new Date(c.date) < new Date(startDate)) pass = false;
+        if (endDate && new Date(c.date) > new Date(endDate)) pass = false;
+        return pass;
+    });
+}
+
+function renderStats() {
+    const filtered = getFilteredCases();
+    const total = filtered.length;
+    const open = filtered.filter(c => c.status === "open").length;
+    const closed = filtered.filter(c => c.status === "closed").length;
+    const pending = filtered.filter(c => c.status === "pending").length;
+    const topProvince = (() => {
+        const provinceCounts = {};
+        filtered.forEach(c => { provinceCounts[c.province] = (provinceCounts[c.province]||0) + 1; });
+        const sorted = Object.entries(provinceCounts).sort((a,b)=>b[1]-a[1]);
+        return sorted.length ? sorted[0][0] : '-';
+    })();
+    document.getElementById('analyticsStats').innerHTML = `
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-balance-scale"></i></span><span class="stat-label">Total Cases</span></span><span class="stat-value">${total}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-folder-open"></i></span><span class="stat-label">Open</span></span><span class="stat-value">${open}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-check-circle"></i></span><span class="stat-label">Closed</span></span><span class="stat-value">${closed}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-clock"></i></span><span class="stat-label">Pending</span></span><span class="stat-value">${pending}</span></div>
+        <div class="stat-card"><span><span class="stat-icon"><i class="fas fa-map-marker-alt"></i></span><span class="stat-label">Top Province</span></span><span class="stat-value">${topProvince}</span></div>
+    `;
+}
+
+function renderCharts() {
+    const filtered = getFilteredCases();
+    // Cases by Province
+    const provinces = ["gauteng","western cape","kwazulu-natal","eastern cape","limpopo","free state","mpumalanga","north west","northern cape"];
+    const casesByProvince = provinces.map(prov => filtered.filter(c => c.province.toLowerCase() === prov).length);
+    const ctx1 = document.getElementById('casesByProvinceChart').getContext('2d');
+    if(window.casesByProvinceChartObj) window.casesByProvinceChartObj.destroy();
+    window.casesByProvinceChartObj = new Chart(ctx1, {
+        type: 'bar',
+        data: { labels: provinces.map(p=>p.charAt(0).toUpperCase()+p.slice(1)), datasets: [{ label: 'Cases', data: casesByProvince, backgroundColor: '#1e88e5' }] },
+        options: { plugins: { legend: { display: false }, title: { display: true, text: 'Cases by Province' } }, scales: { y: { beginAtZero: true } } }
+    });
+    // Cases by Status
+    const statuses = ["open","closed","pending"];
+    const casesByStatus = statuses.map(s => filtered.filter(c => c.status === s).length);
+    const ctx2 = document.getElementById('casesByStatusChart').getContext('2d');
+    if(window.casesByStatusChartObj) window.casesByStatusChartObj.destroy();
+    window.casesByStatusChartObj = new Chart(ctx2, {
+        type: 'pie',
+        data: { labels: statuses.map(s=>s.charAt(0).toUpperCase()+s.slice(1)), datasets: [{ data: casesByStatus, backgroundColor: ['#1e88e5','#43a047','#fbc02d'] }] },
+        options: { plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Cases by Status' } } }
+    });
+    // Cases by Category
+    const categories = ["constitutional","environmental","education","public procurement","health","other"];
+    const casesByCategory = categories.map(cat => filtered.filter(c => c.category === cat).length);
+    const ctx3 = document.getElementById('casesByCategoryChart').getContext('2d');
+    if(window.casesByCategoryChartObj) window.casesByCategoryChartObj.destroy();
+    window.casesByCategoryChartObj = new Chart(ctx3, {
+        type: 'bar',
+        data: { labels: categories.map(c=>c.charAt(0).toUpperCase()+c.slice(1)), datasets: [{ label: 'Cases', data: casesByCategory, backgroundColor: '#43a047' }] },
+        options: { plugins: { legend: { display: false }, title: { display: true, text: 'Cases by Category' } }, scales: { y: { beginAtZero: true } } }
+    });
+}
+
+function renderRecentCases() {
+    const filtered = getFilteredCases();
+    const recent = filtered.slice(-7).reverse();
+    const tbody = document.querySelector('#recentCasesTable tbody');
+    tbody.innerHTML = recent.map(c=>`<tr>
+        <td>${c.title}</td>
+        <td><span class="status-badge ${c.status}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span></td>
+        <td>${c.category}</td>
+        <td>${c.province}</td>
+        <td>${c.municipality}</td>
+        <td>${c.plaintiff}</td>
+        <td>${c.date}</td>
+    </tr>`).join('');
+}
+
+function renderAll() {
+    renderStats();
+    renderCharts();
+    renderRecentCases();
+}
+['province','municipality','category','status','startDate','endDate'].forEach(id => {
+    document.getElementById(id).addEventListener('change', renderAll);
+});
+window.onload = renderAll;
+    </script>
+</body>
+</html> 
