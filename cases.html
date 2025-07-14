@@ -191,7 +191,7 @@
         </div>
     </footer>
     <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop">
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
         <i class="fas fa-arrow-up"></i>
     </button>
     <style>
@@ -362,14 +362,16 @@
     }
     // Back to Top Button functionality
     const backToTopBtn = document.getElementById('backToTop');
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 300) {
-            backToTopBtn.style.display = 'block';
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTopBtn.style.opacity = '1';
+            backToTopBtn.style.visibility = 'visible';
         } else {
-            backToTopBtn.style.display = 'none';
+            backToTopBtn.style.opacity = '0';
+            backToTopBtn.style.visibility = 'hidden';
         }
     });
-    backToTopBtn.addEventListener('click', function() {
+    backToTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     </script>

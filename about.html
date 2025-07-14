@@ -190,6 +190,62 @@
             <p>&copy; 2024 ProgressWatch. All rights reserved. | Promoting transparency in public projects.</p>
         </div>
     </footer>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <style>
+    .back-to-top {
+        position: fixed;
+        bottom: 2.5rem;
+        right: 2.5rem;
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #1e88e5, #43a047);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 4px 24px rgba(30,136,229,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        z-index: 3000;
+    }
+    .back-to-top:hover {
+        background: linear-gradient(135deg, #43a047, #1e88e5);
+        color: #fff;
+        box-shadow: 0 8px 32px rgba(30,136,229,0.22);
+    }
+    @media (max-width: 700px) {
+        .back-to-top {
+            bottom: 1.2rem;
+            right: 1.2rem;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+    }
+    </style>
+    <script>
+    const backToTopBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTopBtn.style.opacity = '1';
+            backToTopBtn.style.visibility = 'visible';
+        } else {
+            backToTopBtn.style.opacity = '0';
+            backToTopBtn.style.visibility = 'hidden';
+        }
+    });
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
