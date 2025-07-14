@@ -2116,6 +2116,8 @@ function renderAnalytics() {
     const recent = filtered.slice(-5).reverse();
     const tbody = document.querySelector('#analyticsRecentProjectsTable tbody');
     tbody.innerHTML = recent.map(p=>`<tr><td>${p.title}</td><td>${p.status}</td><td>${p.category}</td><td>${p.province}</td><td>R ${p.budget.toLocaleString()}</td><td>${p.progress}%</td></tr>`).join('');
+    // Add this line to render the analytics charts
+    renderStatsCharts();
 }
 // Attach filter listeners
 ['analyticsStartDate','analyticsEndDate','analyticsProvince','analyticsMunicipality'].forEach(id => {
